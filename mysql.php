@@ -99,7 +99,7 @@ class DB
 
  	function escape($String)
  	{
- 		return mysql_escape_string($String);
+ 		return mysql_real_escape_string($String);
  	}
 
 
