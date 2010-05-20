@@ -99,6 +99,7 @@ class DB
 
  	function escape($String)
  	{
+		$this->connect();
  		return mysql_real_escape_string($String);
  	}
 
