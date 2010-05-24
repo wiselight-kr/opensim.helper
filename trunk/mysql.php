@@ -12,6 +12,7 @@
 
 //
 // Modified by Fumi.Iseki for CMS/LMS '10 3/29
+//                                    '10 5/24
 //
 
 
@@ -63,7 +64,6 @@ class DB
 
 
 
-	// Added by Fumi.Iseki
 	function set_DB($dbhost, $dbname, $dbuser, $dbpass)
 	{
 		$this->Host 	= $dbhost;	
@@ -108,7 +108,7 @@ class DB
 	function query($Query_String)
 	{
 		$this->connect();
-		if ($this->Errno!=0) return 0; 	// added by Fumi.Iseki
+		if ($this->Errno!=0) return 0;
 
 		$this->Query_ID = mysql_query($Query_String, $this->Link_ID);
 		$this->Row = 0;
@@ -193,7 +193,7 @@ class DB
 		}
 
 		//$this->connect();
-		//if ($this->Errno!=0) return 0; 	// added by Fumi.Iseki
+		//if ($this->Errno!=0) return 0;
 		//$tl = mysql_list_tables($this->Database, $this->Link_ID);
 		//while($row=mysql_fetch_row($tl)) {
 		//	if (in_array($table, $row)) return true;
