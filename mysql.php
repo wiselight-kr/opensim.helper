@@ -110,7 +110,7 @@ class DB
 		$this->connect();
 		if ($this->Errno!=0) return 0; 	// added by Fumi.Iseki
 
-		$this->Query_ID = mysql_query($Query_String,$this->Link_ID);
+		$this->Query_ID = mysql_query($Query_String, $this->Link_ID);
 		$this->Row = 0;
 		$this->Errno = mysql_errno();
 		$this->Error = mysql_error();
@@ -157,7 +157,7 @@ class DB
 		$this->connect();
 		if ($this->Errno!=0) return;
 
-		$this->Query_ID = @mysql_query("OPTIMIZE TABLE $tbl_name",$this->Link_ID);
+		$this->Query_ID = @mysql_query("OPTIMIZE TABLE $tbl_name", $this->Link_ID);
 	}
 
 
@@ -182,16 +182,36 @@ class DB
 
 
 
-	// added by Fumi.Iseki
 	function exist_table($table)
 	{
-		$this->connect();
-		if ($this->Errno!=0) return false;
+		$this->query("SHOW TABLES");
 
-		$tl = mysql_list_tables($this->Database, $this->Link_ID);
-		while($row=mysql_fetch_row($tl)) {
-			if (in_array($table, $row)) return true;
+		if ($this->Errno==0) {
+			while (list($db_tbl) = $this->next_record()) {
+				if ($db_tbl==$table) return true;
+			}
 		}
+
+		//$this->connect();
+		//if ($this->Errno!=0) return 0; 	// added by Fumi.Iseki
+		//$tl = mysql_list_tables($this->Database, $this->Link_ID);
+		//while($row=mysql_fetch_row($tl)) {
+		//	if (in_array($table, $row)) return true;
+		//}
+		return false;
+	}
+
+
+	function exist_field($table, $field)
+	{
+		$this->query("SHOW COLUMNS FROM ".$table);
+
+		if ($this->Errno==0) {
+			while (list($db_fld) = $this->next_record()) {
+				if ($db_fld==$field) return true;
+			}
+		}
+
 		return false;
 	}
 
