@@ -174,7 +174,7 @@ class DB
 
 	function close()
 	{
-		if ($this->Link_ID) {
+		if ($this->Link_ID!=0) {
 			mysql_close($this->Link_ID);
 			$this->Link_ID = 0;
 		}
@@ -188,16 +188,21 @@ class DB
 
 		if ($this->Errno==0) {
 			while (list($db_tbl) = $this->next_record()) {
-				if ($db_tbl==$table) return true;
+				if ($db_tbl==$table) {
+					$this->close();
+					return true;
+				}
 			}
 		}
 
-		//$this->connect();
-		//if ($this->Errno!=0) return 0;
-		//$tl = mysql_list_tables($this->Database, $this->Link_ID);
-		//while($row=mysql_fetch_row($tl)) {
-		//	if (in_array($table, $row)) return true;
-		//}
+/*		$this->connect();
+		if ($this->Errno!=0) return 0;
+		$tl = mysql_list_tables($this->Database, $this->Link_ID);
+		while($row=mysql_fetch_row($tl)) {
+			if (in_array($table, $row)) return true;
+		}*/
+
+		$this->close();
 		return false;
 	}
 
@@ -208,10 +213,14 @@ class DB
 
 		if ($this->Errno==0) {
 			while (list($db_fld) = $this->next_record()) {
-				if ($db_fld==$field) return true;
+				if ($db_fld==$field) {
+					$this->close();
+					return true;
+				}
 			}
 		}
 
+		$this->close();
 		return false;
 	}
 
