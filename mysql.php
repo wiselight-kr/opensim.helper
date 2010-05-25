@@ -33,32 +33,30 @@ class DB
 	var $Database = OPENSIM_DB_NAME;	// Logical database name on that server
 	var $User 	  = OPENSIM_DB_USER;	// Database user
 	var $Password = OPENSIM_DB_PASS;	// Database user's password
-	var $Link_ID  = 0;					// Result of mysql_connect()
-	var $Query_ID = 0;					// Result of most recent mysql_query()
+	var $Link_ID  = null;				// Result of mysql_connect()
+	var $Query_ID = null;				// Result of most recent mysql_query()
 	var $Record	  = array();			// Current mysql_fetch_array()-result
 	var $Row;							// Current row number
 	var $Errno    = 0;					// Error state of query
 	var $Error    = "";
 
 
-	/*
 	function DB($connect=false)
 	{
-		$this->Host 	= OPENSIM_DB_HOST;	
-		$this->Database = OPENSIM_DB_NAME;	
-		$this->User 	= OPENSIM_DB_USER;	
-		$this->Password = OPENSIM_DB_PASS;	
+		//$this->Host 	= OPENSIM_DB_HOST;	
+		//$this->Database = OPENSIM_DB_NAME;	
+		//$this->User 	= OPENSIM_DB_USER;	
+		//$this->Password = OPENSIM_DB_PASS;	
 
 		if ($connect) $this->connect();
 	}
-	*/
 
 
 
 	function halt($msg)
 	{
-		echo("</td></tr></table><b>Database error:</b> $msg<br />\n");
-		echo("<b>MySQL error</b>: $this->Errno ($this->Error)<br />\n");
+		print("</td></tr></table><b>Database error:</b> $msg<br />\n");
+		print("<b>MySQL error</b>: $this->Errno ($this->Error)<br />\n");
 		die("Session halted.");
 	}
 
@@ -76,20 +74,21 @@ class DB
 
 	function connect()
 	{
-		if($this->Link_ID==0) {
+		if ($this->Link_ID==null) {
 			$this->Link_ID = mysql_connect($this->Host, $this->User, $this->Password);
 			if (!$this->Link_ID) {
 				//$this->halt("Link_ID == false, connect failed");
 				$this->Errno = 999;
 				return;
 			}
+
 			//if (_CHARSET=="UTF-8") mysql_set_charset('utf8'); 
 			mysql_set_charset('utf8'); 
 			$SelectResult = mysql_select_db($this->Database, $this->Link_ID);
 			if (!$SelectResult) {
 				$this->Errno = mysql_errno($this->Link_ID);
 				$this->Error = mysql_error($this->Link_ID);
-				$this->Link_ID = 0;
+				$this->Link_ID = null;
 				$this->halt("cannot select database <i>".$this->Database."</i>");
 			}
 		}
@@ -131,7 +130,7 @@ class DB
 		$stat = is_array($this->Record);
 		if (!$stat) {
 			@mysql_free_result($this->Query_ID);
-			$this->Query_ID = 0;
+			$this->Query_ID = null;
 		}
 		return $this->Record;
 	}
@@ -164,9 +163,9 @@ class DB
 
 	function clean_results()
 	{
-		if ($this->Query_ID!=0) {
+		if ($this->Query_ID!=null) {
 			mysql_freeresult($this->Query_ID);
-			$this->Query_ID = 0;
+			$this->Query_ID = null;
 		}
 	}
 
@@ -174,54 +173,62 @@ class DB
 
 	function close()
 	{
-		if ($this->Link_ID!=0) {
+	/*
+		if ($this->Link_ID) {
 			mysql_close($this->Link_ID);
-			$this->Link_ID = 0;
+			$this->Link_ID = null;
 		}
+	*/
 	}
 
 
 
 	function exist_table($table)
 	{
+		$ret = false;
+
 		$this->query("SHOW TABLES");
 
 		if ($this->Errno==0) {
 			while (list($db_tbl) = $this->next_record()) {
 				if ($db_tbl==$table) {
-					$this->close();
-					return true;
+					$ret = true;
+					break;
 				}
 			}
 		}
 
-/*		$this->connect();
-		if ($this->Errno!=0) return 0;
+		/*
+		$this->connect();
+		if ($this->Errno!=0) return false;
+
 		$tl = mysql_list_tables($this->Database, $this->Link_ID);
 		while($row=mysql_fetch_row($tl)) {
-			if (in_array($table, $row)) return true;
+			if (in_array($table, $row)) {
+				$ret = true;
+				break;
+			}
 		}*/
 
-		$this->close();
-		return false;
+		return $ret;
 	}
 
 
 	function exist_field($table, $field)
 	{
+		$ret = false;
 		$this->query("SHOW COLUMNS FROM ".$table);
 
 		if ($this->Errno==0) {
 			while (list($db_fld) = $this->next_record()) {
 				if ($db_fld==$field) {
-					$this->close();
-					return true;
+					$ret = true;
+					break;
 				}
 			}
 		}
 
-		$this->close();
-		return false;
+		return $ret;
 	}
 
 }
