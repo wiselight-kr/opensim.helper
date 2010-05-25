@@ -50,7 +50,7 @@
 #
 
 include("./config.php");
-include("./opensim.mysql.php");
+include("./mysql.php.php");
 require("./helpers.php");
 
 ###################### No user serviceable parts below #####################

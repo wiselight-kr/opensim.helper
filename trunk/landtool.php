@@ -27,7 +27,7 @@
 // Modified by Fumi.Iseki for CMS/LMS '09 5/31
 
 include("./config.php");
-include("./opensim.mysql.php");
+include("./mysql.func.php");
 require("./helpers.php");
 
 ###################### No user serviceable parts below #####################
