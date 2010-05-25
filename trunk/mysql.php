@@ -214,6 +214,7 @@ class DB
 	}
 
 
+
 	function exist_field($table, $field)
 	{
 		$ret = false;
