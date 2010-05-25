@@ -9,7 +9,7 @@
 //
 
 //
-require_once(CMS_MODULE_PATH."/include/opensim.func.php");
+require_once(CMS_MODULE_PATH."/include/opensim.mysql.php");
 
 
 
