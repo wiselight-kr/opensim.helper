@@ -231,7 +231,7 @@ function balance_request($method_name, $params, $app_data)
 		if ($db->exist_table("Presence")) {
         	$sql = "SELECT UserID FROM Presence WHERE UserID='".$db->escape($agentid)."' AND ".
                 									" SecureSessionID='".$db->escape($sessionid)."' AND ".
-                									" Online='true' AND RegionID='".$db->escape($regionid) ."'";
+                									" RegionID='".$db->escape($regionid)."'";
 		}
 		else {
         	$sql = "SELECT UUID FROM agents WHERE UUID='".$db->escape($agentid)."' AND ".
@@ -308,7 +308,7 @@ function region_move_money($method_name, $params, $app_data)
 		if ($db->exist_table("Presence")) {
         	$sql = "SELECT UserID FROM Presence WHERE UserID='".$db->escape($agentid)."' AND ".
                 									" SecureSessionID='".$db->escape($sessionid)."' AND ".
-                									" Online='true' AND RegionID='".$db->escape($regionid)."'";
+                									" RegionID='".$db->escape($regionid)."'";
 		}
 		else {
         	$sql = "SELECT UUID FROM agents WHERE UUID='".$db->escape($agentid)."' AND ".
@@ -428,7 +428,7 @@ function claimUser_func($method_name, $params, $app_data)
         # We have a region, check agent session
 		if ($db->exist_table("Presence")) {
         	$sql = "SELECT UserID FROM Presence WHERE UserID='".$db->escape($agentid)."' AND ".
-                									" SecureSessionID='".$db->escape($sessionid)."' AND Online='true'";
+                									" SecureSessionID='".$db->escape($sessionid)."'";
 		}
 		else {
         	$sql = "SELECT UUID FROM agents WHERE UUID='".$db->escape($agentid)."' AND ".
