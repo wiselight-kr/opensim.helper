@@ -90,9 +90,9 @@ function update_simulator_balance($agentId)
 {
 	$db = new DB;
 
-	if ($db->exist_table("Presence")) {
-		$sql = "SELECT serverIP,serverHttpPort,serverURI FROM Presence".
-				" INNER JOIN regions ON regions.uuid=Presence.RegionID WHERE Presence.UserID='".$db->escape($agentId)."'";
+	if ($db->exist_table("GridUser")) {
+		$sql = "SELECT serverIP,serverHttpPort,serverURI FROM GridUser".
+				" INNER JOIN regions ON regions.uuid=GridUser.LastRegionID WHERE GridUser.UserID='".$db->escape($agentId)."'";
 	}
 	else {
 		$sql = "SELECT serverIP,serverHttpPort,serverURI FROM agents".
@@ -121,9 +121,9 @@ function user_alert($agentId, $soundId, $text)
 {
     $db = new DB;
 
-	if ($db->exist_table("Presence")) {
-    	$sql = "SELECT serverIP,serverHttpPort,serverURI,regionSecret FROM Presence".
-				" INNER JOIN regions ON regions.uuid=Presence.RegionID WHERE Presence.UserID='".$db->escape($agentId)."'";
+	if ($db->exist_table("GridUser")) {
+    	$sql = "SELECT serverIP,serverHttpPort,serverURI,regionSecret FROM GridUser".
+				" INNER JOIN regions ON regions.uuid=GridUser.LastRegionID WHERE GridUser.UserID='".$db->escape($agentId)."'";
 	}
 	else {
     	$sql = "SELECT serverIP,serverHttpPort,serverURI,regionSecret FROM agents".
@@ -155,8 +155,8 @@ function move_money($sourceId, $destId, $amount, $aggregatePermInventory,
 {
 	$db = new DB;
 	# SELECT current region
-	if ($db->exist_table("Presence")) {
-		$sql = "SELECT RegionID FROM Presence WHERE UserID='".$db->escape($sourceId)."'";
+	if ($db->exist_table("GridUser")) {
+		$sql = "SELECT LastRegionID FROM GridUser WHERE UserID='".$db->escape($sourceId)."'";
 	}
 	else {
 		$sql = "SELECT currentRegion FROM agents WHERE UUID='".$db->escape($sourceId)."'";
