@@ -188,7 +188,6 @@ class DB
 		$ret = false;
 
 		$this->query("SHOW TABLES");
-
 		if ($this->Errno==0) {
 			while (list($db_tbl) = $this->next_record()) {
 				if ($db_tbl==$table) {
@@ -217,19 +216,32 @@ class DB
 
 	function exist_field($table, $field)
 	{
-		$ret = false;
-		$this->query("SHOW COLUMNS FROM ".$table);
+		$ret1 = false;
+		$ret2 = false;
 
+		$this->query("SHOW TABLES");
 		if ($this->Errno==0) {
-			while (list($db_fld) = $this->next_record()) {
-				if ($db_fld==$field) {
-					$ret = true;
+			while (list($db_tbl) = $this->next_record()) {
+				if ($db_tbl==$table) {
+					$ret1 = true;
 					break;
 				}
 			}
 		}
 
-		return $ret;
+		if ($ret1) {
+			$this->query("SHOW COLUMNS FROM ".$table);
+			if ($this->Errno==0) {
+				while (list($db_fld) = $this->next_record()) {
+					if ($db_fld==$field) {
+						$ret2 = true;
+						break;
+					}
+				}
+			}
+		}
+
+		return $ret2;
 	}
 
 }
