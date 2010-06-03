@@ -162,7 +162,7 @@ class DB
 		$this->connect();
 		if ($this->Errno!=0) return;
 
-		$this->Query_ID = @mysql_query("OPTIMIZE TABLE $tbl_name", $this->Link_ID);
+		$this->Query_ID = @mysql_query('OPTIMIZE TABLE '.$tbl_name, $this->Link_ID);
 	}
 
 
