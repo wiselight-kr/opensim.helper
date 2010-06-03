@@ -9,11 +9,11 @@
 //
 
 //
-require_once(CMS_MODULE_PATH."/include/opensim.mysql.php");
+require_once(CMS_MODULE_PATH.'/include/opensim.mysql.php');
 
 
 
-$display_marker = "dr";	// infomation marker
+$display_marker = 'dr';	// infomation marker
 
 
 if ($size==16){
@@ -38,12 +38,12 @@ else if ($size==512) {
 ?>
 
 function loadmap() {
-	mapInstance = new ZoomSize(<?php print $size?>);
+	mapInstance = new ZoomSize(<?php echo $size?>);
 	mapInstance = new WORLDMap(document.getElementById('map-container'), {hasZoomControls: false, hasPanningControls: true});
-	mapInstance.centerAndZoomAtWORLDCoord(new XYPoint(<?php print $centerX?>, <?php print $centerY?>), 1);
+	mapInstance.centerAndZoomAtWORLDCoord(new XYPoint(<?php echo $centerX?>, <?php echo $centerY?>), 1);
 <?php
 	$DbLink = new DB;
-	$DbLink->query("SELECT uuid,regionName,serverIP,serverURI,locX,locY,serverHttpPort FROM regions ORDER BY locX");
+	$DbLink->query('SELECT uuid,regionName,serverIP,serverURI,locX,locY,serverHttpPort FROM regions ORDER BY locX');
 
 	while($DbLink->Errno==0 and list($uuid, $regionName, $serverIP, $serverURI, $locX, $locY, $serverHttpPort)=$DbLink->next_record())
 	{
@@ -52,16 +52,16 @@ function loadmap() {
 		$lastN  = $name['lastname'];
 
 		$dx = 0.00; $dy = 0.00;
-		if ($display_marker=="tl") {
+		if ($display_marker=='tl') {
 			$dx = -0.40; 	$dy = 0.40;
 		}
-		else if ($display_marker=="tr") {
+		else if ($display_marker=='tr') {
 			$dx = 0.40; 	$dy = 0.40;
 		}
-		else if ($display_marker=="dl") {
+		else if ($display_marker=='dl') {
 			$dx = -0.40; 	$dy = -0.40;
 		}
-		else if ($display_marker=="dr") {
+		else if ($display_marker=='dr') {
 			$dx = 0.40; 	$dy = -0.40;
 		}
 
@@ -70,31 +70,31 @@ function loadmap() {
 		$MarkerCoordX = $locX + $dx;
 		$MarkerCoordY = $locY + $dy;
 
-		$server = "";
-		if ($serverURI!="") {
-    		$dec = explode(":", $serverURI);
-    		if (!strncasecmp($dec[0], "http", 4)) $server = "$dec[0]:$dec[1]";
+		$server = '';
+		if ($serverURI!='') {
+    		$dec = explode(':', $serverURI);
+    		if (!strncasecmp($dec[0], 'http', 4)) $server = $dec[0].':'.$dec[1];
 		}   
-		if ($server=="") {
+		if ($server=='') {
     		$server ="http://$serverIP";
 		}
-		$server = "$server:$serverHttpPort";
+		$server = $server.':'.$serverHttpPort;
 
-		$uuid = str_replace("-", "", $uuid);
-	  	$imageURL = $server."/index.php?method=regionImage".$uuid;
-		$windowTitle = "Region Name: ".$regionName."<br /><br />Coordinates: ".$locX.",".$locY."<br /><br />Owner: ".$firstN." ".$lastN;
+		$uuid = str_replace('-', '', $uuid);
+	  	$imageURL = $server.'/index.php?method=regionImage'.$uuid;
+		$windowTitle = 'Region Name: '.$regionName.'<br /><br />Coordinates: '.$locX.','.$locY.'<br /><br />Owner: '.$firstN.' '.$lastN;
 ?>
-	  	var tmp_region_image = new Img("<?php print $imageURL?>", <?php print $size?>, <?php print $size?>);
+	  	var tmp_region_image = new Img("<?php echo $imageURL?>", <?php echo $size?>, <?php echo $size?>);
 		var region_loc = new Icon(tmp_region_image);
 		var all_images = [region_loc, region_loc, region_loc, region_loc, region_loc, region_loc];
-		var marker = new Marker(all_images, new XYPoint(<?php print $locX?>, <?php print $locY?>));
+		var marker = new Marker(all_images, new XYPoint(<?php echo $locX?>, <?php echo $locY?>));
 		mapInstance.addMarker(marker);
 	
-		var map_marker_img = new Img("images/info.gif", <?php print $infosize?>, <?php print $infosize?>);
+		var map_marker_img = new Img("images/info.gif", <?php echo $infosize?>, <?php echo $infosize?>);
 		var map_marker_icon = new Icon(map_marker_img);
-		var mapWindow = new MapWindow("<?php print $windowTitle?>", {closeOnMove: true});
+		var mapWindow = new MapWindow("<?php echo $windowTitle?>", {closeOnMove: true});
 		var all_images = [map_marker_icon, map_marker_icon, map_marker_icon, map_marker_icon, map_marker_icon, map_marker_icon];
-		var marker = new Marker(all_images, new XYPoint(<?php print $MarkerCoordX?>, <?php print $MarkerCoordY?>));
+		var marker = new Marker(all_images, new XYPoint(<?php echo $MarkerCoordX?>, <?php echo $MarkerCoordY?>));
 		mapInstance.addMarker(marker, mapWindow);
 <?php
 	}
@@ -105,7 +105,7 @@ function loadmap() {
 
 function setZoom(size) {
 	var cord = mapInstance.getMapCenter();
-	window.location.href = "<?php print $world_map_url?>?size="+size+"&ctX="+cord.x+"&ctY="+cord.y+"";
+	window.location.href = "<?php echo $world_map_url?>?size="+size+"&ctX="+cord.x+"&ctY="+cord.y+"";
 }
 
 

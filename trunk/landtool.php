@@ -26,9 +26,9 @@
 
 // Modified by Fumi.Iseki for CMS/LMS '09 5/31
 
-include("./config.php");
-include("./mysql.func.php");
-require("./helpers.php");
+include('./config.php');
+include('./mysql.func.php');
+require('./helpers.php');
 
 ###################### No user serviceable parts below #####################
 #
@@ -89,14 +89,14 @@ function buy_land_prep($method_name, $params, $app_data)
 											'currency'   => $currency,
 											'confirm'    => $confirmvalue));
 		header("Content-type: text/xml");
-		print $response_xml;
+		echo $response_xml;
 	}
 	else {
 		header("Content-type: text/xml");
 		$response_xml = xmlrpc_encode(array( 'success'      => False,
 											 'errorMessage' => "\n\nUnable to Authenticate\n\nClick URL for more info.",
 											 'errorURI'     => "".SYSURL.""));
-		print $response_xml;
+		echo $response_xml;
 	}
 
 	return "";
@@ -145,7 +145,7 @@ function buy_land($method_name, $params, $app_data)
 						'success'      => False,
 						'errorMessage' => "\n\nThe gateway has declined your transaction. Please update your payment method AND try again later.",
 						'errorURI'     => "".SYSURL.""));
-				print $response_xml;
+				echo $response_xml;
 				return "";
 			}
 			move_money($economy_source_account, $agentid, $amount, 0, 0, 0, 0, "Currency purchase",0,$ipAddress);
@@ -153,14 +153,14 @@ function buy_land($method_name, $params, $app_data)
 		header("Content-type: text/xml");
 		
 		$response_xml = xmlrpc_encode(array('success' => True));
-		print $response_xml;
+		echo $response_xml;
 	}
 	else {
 		header("Content-type: text/xml");
 		$response_xml = xmlrpc_encode(array('success'      => False,
 											'errorMessage' => "\n\nUnable to Authenticate\n\nClick URL for more info.",
 											'errorURI'     => "".SYSURL.""));
-		print $response_xml;
+		echo $response_xml;
 	}
 	return "";
 }

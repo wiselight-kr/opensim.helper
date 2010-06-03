@@ -17,12 +17,12 @@
 
 
 // for TEST
-if (!defined("OPENSIM_DB_HOST")) {
+if (!defined('OPENSIM_DB_HOST')) {
 	exit();
-	//define("OPENSIM_DB_HOST",  "202.26.159.xxx");
-	//define("OPENSIM_DB_NAME",  "opensim_xxxx");
-	//define("OPENSIM_DB_USER",  "opensim_xxxx");
-	//define("OPENSIM_DB_PASS",  "opensim_xxxx");
+	//define('OPENSIM_DB_HOST',  '202.26.159.xxx');
+	//define('OPENSIM_DB_NAME',  'opensim_xxxx');
+	//define('OPENSIM_DB_USER',  'opensim_xxxx');
+	//define('OPENSIM_DB_PASS',  'opensim_xxxx');
 }
 
 
@@ -38,7 +38,7 @@ class DB
 	var $Record	  = array();			// Current mysql_fetch_array()-result
 	var $Row;							// Current row number
 	var $Errno    = 0;					// Error state of query
-	var $Error    = "";
+	var $Error    = '';
 
 
 	function DB($connect=false)
@@ -55,9 +55,9 @@ class DB
 
 	function halt($msg)
 	{
-		print("</td></tr></table><b>Database error:</b> $msg<br />\n");
-		print("<b>MySQL error</b>: $this->Errno ($this->Error)<br />\n");
-		die("Session halted.");
+		echo "</td></tr></table><b>Database error:</b> $msg<br />\n";
+		echo "<b>MySQL error</b>: $this->Errno ($this->Error)<br />\n";
+		die('Session halted.');
 	}
 
 
@@ -77,19 +77,19 @@ class DB
 		if ($this->Link_ID==null) {
 			$this->Link_ID = mysql_connect($this->Host, $this->User, $this->Password);
 			if (!$this->Link_ID) {
-				//$this->halt("Link_ID == false, connect failed");
+				//$this->halt('Link_ID == false, connect failed');
 				$this->Errno = 999;
 				return;
 			}
 
-			//if (_CHARSET=="UTF-8") mysql_set_charset('utf8'); 
+			//if (_CHARSET=='UTF-8') mysql_set_charset('utf8'); 
 			mysql_set_charset('utf8'); 
 			$SelectResult = mysql_select_db($this->Database, $this->Link_ID);
 			if (!$SelectResult) {
 				$this->Errno = mysql_errno($this->Link_ID);
 				$this->Error = mysql_error($this->Link_ID);
 				$this->Link_ID = null;
-				$this->halt("cannot select database <i>".$this->Database."</i>");
+				$this->halt('cannot select database <i>'.$this->Database.'</i>');
 			}
 		}
 	}
@@ -114,7 +114,7 @@ class DB
 		$this->Errno = mysql_errno();
 		$this->Error = mysql_error();
 		if (!$this->Query_ID) {
-			$this->halt("Invalid SQL: ".$Query_String);
+			$this->halt('Invalid SQL: '.$Query_String);
 		}
 		return $this->Query_ID;
 	}
@@ -187,7 +187,7 @@ class DB
 	{
 		$ret = false;
 
-		$this->query("SHOW TABLES");
+		$this->query('SHOW TABLES');
 		if ($this->Errno==0) {
 			while (list($db_tbl) = $this->next_record()) {
 				if ($db_tbl==$table) {
@@ -219,7 +219,7 @@ class DB
 		$ret1 = false;
 		$ret2 = false;
 
-		$this->query("SHOW TABLES");
+		$this->query('SHOW TABLES');
 		if ($this->Errno==0) {
 			while (list($db_tbl) = $this->next_record()) {
 				if ($db_tbl==$table) {
@@ -230,7 +230,7 @@ class DB
 		}
 
 		if ($ret1) {
-			$this->query("SHOW COLUMNS FROM ".$table);
+			$this->query('SHOW COLUMNS FROM '.$table);
 			if ($this->Errno==0) {
 				while (list($db_fld) = $this->next_record()) {
 					if ($db_fld==$field) {
