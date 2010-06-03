@@ -104,7 +104,7 @@ function get_currency_quote($method_name, $params, $app_data)
 		header("Content-type: text/xml");
 		$response_xml = xmlrpc_encode(array('success'=> True, 'currency'=> $currency, 'confirm'=> $confirmvalue));
 		//error_log("1:->".$response_xml);
-		print $response_xml;
+		echo $response_xml;
 	}
 	else {
 		header("Content-type: text/xml");
@@ -112,7 +112,7 @@ function get_currency_quote($method_name, $params, $app_data)
 											'errorMessage'=> "Unable to Authenticate\n\nClick URL for more info.",
 											'errorURI'	  => "".SYSURL.""));
 		//error_log("2:-> $sql<br />".$response_xml);
-		print $response_xml;
+		echo $response_xml;
 	}
 
 	return "";
@@ -158,7 +158,7 @@ function buy_currency($method_name, $params, $app_data)
 			header("Content-type: text/xml");
 			$response_xml = xmlrpc_encode(array('success'=> False, 'errorMessage'=> $error, 'errorURI'=> "".SYSURL.""));
 			//error_log("3:->".$response_xml);
-			print $response_xml;
+			echo $response_xml;
 			return "";
 		}
 
@@ -168,7 +168,7 @@ function buy_currency($method_name, $params, $app_data)
 			header("Content-type: text/xml");
 			$response_xml = xmlrpc_encode(array('success' => True));
 			//error_log("4:->".$response_xml);
-			print $response_xml;
+			echo $response_xml;
 			move_money($economy_source_account, $agentid, $amount, 0, 0, 0, 0, "Currency purchase",0,$ipAddress);
 			update_simulator_balance($agentid);
 		}
@@ -178,7 +178,7 @@ function buy_currency($method_name, $params, $app_data)
 												'errorMessage' => "We were unable to process the transaction.  The gateway denied your charge",
 												'errorURI'     => "".SYSURL.""));
 			//error_log("5:->".$response_xml);
-			print $response_xml;
+			echo $response_xml;
 		}
 	}
 	else {
@@ -187,7 +187,7 @@ function buy_currency($method_name, $params, $app_data)
 											'errorMessage' => "Unable to Authenticate\n\nClick URL for more info.",
 											'errorURI'     => "".SYSURL.""));
 		//error_log("6:->".$response_xml);
-		print $response_xml;
+		echo $response_xml;
 	}
 	
 	return "";
@@ -261,7 +261,7 @@ function balance_request($method_name, $params, $app_data)
 
     header("Content-type: text/xml");
 	//error_log("7:->".$response_xml);
-    print $response_xml;
+    echo $response_xml;
 
     return "";
 }
@@ -390,7 +390,7 @@ function region_move_money($method_name, $params, $app_data)
 
 	header("Content-type: text/xml");
 	//error_log("8:->".$response_xml);
-	print $response_xml;
+	echo $response_xml;
 	
 	$stri = update_simulator_balance($agentid);
 	$stri = update_simulator_balance($destid);
@@ -466,7 +466,7 @@ function claimUser_func($method_name, $params, $app_data)
 
 	header("Content-type: text/xml");
 	//error_log("9:->".$response_xml);
-	print $response_xml;
+	echo $response_xml;
 	
 	return "";
 }
