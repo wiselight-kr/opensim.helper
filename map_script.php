@@ -76,7 +76,7 @@ function loadmap() {
     		if (!strncasecmp($dec[0], 'http', 4)) $server = $dec[0].':'.$dec[1];
 		}   
 		if ($server=='') {
-    		$server ="http://$serverIP";
+    		$server = 'http://'.$serverIP;
 		}
 		$server = $server.':'.$serverHttpPort;
 
