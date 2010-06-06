@@ -44,7 +44,7 @@ class DB
 
 
 
-	function DB($timeout=60, $connect=false)
+	function DB($connect=false, $timeout=60)
 	{
 		//$this->Host 	= OPENSIM_DB_HOST;	
 		//$this->Database = OPENSIM_DB_NAME;	
