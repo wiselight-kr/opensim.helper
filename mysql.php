@@ -252,8 +252,8 @@ class DB
 
 		if ($this->Errno==0) {
 			$table_status = $this->next_record();
-			$update = $table_status->Update_time;
-			if ($unixtime) $update = unix_timestamp($update);
+			$update = $table_status['Update_time'];
+			if ($unixtime) $update = strtotime($update);
 		}
 
 		return $update;
