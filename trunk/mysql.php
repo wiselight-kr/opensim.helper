@@ -16,16 +16,6 @@
 //
 
 
-// for TEST
-if (!defined('OPENSIM_DB_HOST')) {
-	exit();
-	//define('OPENSIM_DB_HOST',  '202.26.159.xxx');
-	//define('OPENSIM_DB_NAME',  'opensim_xxxx');
-	//define('OPENSIM_DB_USER',  'opensim_xxxx');
-	//define('OPENSIM_DB_PASS',  'opensim_xxxx');
-}
-
-
 
 class DB
 {
@@ -60,21 +50,21 @@ class DB
 
 
 
-	function halt($msg)
-	{
-		echo "</td></tr></table><b>Database error:</b> $msg<br />\n";
-		echo "<b>MySQL error</b>: $this->Errno ($this->Error)<br />\n";
-		die('Session halted.');
-	}
-
-
-
 	function set_DB($dbhost, $dbname, $dbuser, $dbpass)
 	{
 		$this->Host 	= $dbhost;	
 		$this->Database = $dbname;	
 		$this->User 	= $dbuser;	
 		$this->Password = $dbpass;	
+	}
+
+
+
+	function halt($msg)
+	{
+		echo "</td></tr></table><b>Database error:</b> $msg<br />\n";
+		echo "<b>MySQL error</b>: $this->Errno ($this->Error)<br />\n";
+		die('Session halted.');
 	}
 
 
