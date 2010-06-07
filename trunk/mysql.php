@@ -29,10 +29,10 @@ if (!defined('OPENSIM_DB_HOST')) {
 
 class DB
 {
-	var $Host 	  = OPENSIM_DB_HOST;	// Hostname of our MySQL server
-	var $Database = OPENSIM_DB_NAME;	// Logical database name on that server
-	var $User 	  = OPENSIM_DB_USER;	// Database user
-	var $Password = OPENSIM_DB_PASS;	// Database user's password
+	var $Host 	  = null;				// Hostname of our MySQL server
+	var $Database = null;				// Logical database name on that server
+	var $User 	  = null;				// Database user
+	var $Password = null;				// Database user's password
 	var $Link_ID  = null;				// Result of mysql_connect()
 	var $Query_ID = null;				// Result of most recent mysql_query()
 	var $Record	  = array();			// Current mysql_fetch_array()-result
@@ -45,7 +45,7 @@ class DB
 
 
 
-	function DB($dbhost, $dbname, $dbuser, $dbpass, $connect=false, $timeout=60)
+	function DB($dbhost=null, $dbname=null, $dbuser=null, $dbpass=null, $connect=false, $timeout=60)
 	{
 		$this->Host 	= $dbhost;	
 		$this->Database = $dbname;	
@@ -57,21 +57,6 @@ class DB
 
 		if ($connect) $this->connect();
 	}
-
-
-
-/*	function DB($connect=false, $timeout=60)
-	{
-		//$this->Host 	= OPENSIM_DB_HOST;	
-		//$this->Database = OPENSIM_DB_NAME;	
-		//$this->User 	= OPENSIM_DB_USER;	
-		//$this->Password = OPENSIM_DB_PASS;	
-
-		$this->Timeout = $timeout;
-		//ini_set('mysql.connect_timeout', $timeout);
-
-		if ($connect) $this->connect();
-	}*/
 
 
 
