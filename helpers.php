@@ -60,8 +60,7 @@ function convert_to_real($currency)
 {
 	if($currency == 0) return 0;
 
-	$db = new DB;
-	$db->set_DB(CURRENCY_DB_HOST, CURRENCY_DB_NAME, CURRENCY_DB_USER, CURRENCY_DB_PASS);
+	$db = new DB(CURRENCY_DB_HOST, CURRENCY_DB_NAME, CURRENCY_DB_USER, CURRENCY_DB_PASS);
 
 	# Get the currency conversion ratio in USD Cents per Money Unit
 	# Actually, it's whatever currency your credit card processor uses
@@ -88,7 +87,7 @@ function convert_to_real($currency)
 
 function update_simulator_balance($agentId)
 {
-	$db = new DB;
+	$db = new DB(OPENSIM_DB_HOST, OPENSIM_DB_NAME, OPENSIM_DB_USER, OPENSIM_DB_PASS);
 
 	if ($db->exist_table("GridUser")) {
 		$sql = "SELECT serverIP,serverHttpPort,serverURI FROM GridUser".
@@ -119,7 +118,7 @@ function update_simulator_balance($agentId)
 
 function user_alert($agentId, $soundId, $text)
 {
-    $db = new DB;
+	$db = new DB(OPENSIM_DB_HOST, OPENSIM_DB_NAME, OPENSIM_DB_USER, OPENSIM_DB_PASS);
 
 	if ($db->exist_table("GridUser")) {
     	$sql = "SELECT serverIP,serverHttpPort,serverURI,regionSecret FROM GridUser".
@@ -153,7 +152,8 @@ function move_money($sourceId, $destId, $amount, $aggregatePermInventory,
 		$aggregatePermNextOwner, $flags, $transactionType, $description,
 		$regionGenerated,$ipGenerated)
 {
-	$db = new DB;
+	$db = new DB(OPENSIM_DB_HOST, OPENSIM_DB_NAME, OPENSIM_DB_USER, OPENSIM_DB_PASS);
+
 	# SELECT current region
 	if ($db->exist_table("GridUser")) {
 		$sql = "SELECT LastRegionID FROM GridUser WHERE UserID='".$db->escape($sourceId)."'";
@@ -168,8 +168,7 @@ function move_money($sourceId, $destId, $amount, $aggregatePermInventory,
 	$db->close();
 
 	// CURRENCY
-	$db = new DB;
-	$db->set_DB(CURRENCY_DB_HOST, CURRENCY_DB_NAME, CURRENCY_DB_USER, CURRENCY_DB_PASS);
+	$db = new DB(CURRENCY_DB_HOST, CURRENCY_DB_NAME, CURRENCY_DB_USER, CURRENCY_DB_PASS);
 
 	# Add Cash to one account
 	$sql = "INSERT INTO ".CURRENCY_TRANSACTION_TBL." (sourceId,destId,amount,flags,".
@@ -214,8 +213,7 @@ function move_money($sourceId, $destId, $amount, $aggregatePermInventory,
 
 function get_balance($avatarId)
 {
-    $db = new DB;
-	$db->set_DB(CURRENCY_DB_HOST, CURRENCY_DB_NAME, CURRENCY_DB_USER, CURRENCY_DB_PASS);
+    $db = new DB(CURRENCY_DB_HOST, CURRENCY_DB_NAME, CURRENCY_DB_USER, CURRENCY_DB_PASS);
 
     $cash = 0;
     $sql = "SELECT SUM(amount) FROM ".CURRENCY_TRANSACTION_TBL." WHERE destId='".$db->escape($avatarId)."'";
@@ -260,7 +258,7 @@ function do_call($host, $port, $uri, $request)
 
 function agent_name($agentId)
 {
-	$db = new DB;
+	$db = new DB(OPENSIM_DB_HOST, OPENSIM_DB_NAME, OPENSIM_DB_USER, OPENSIM_DB_PASS);
 
 	if ($db->exist_table("UserAccounts")){
 		$sql = "SELECT FirstName,LastName FROM UserAccounts WHERE PrincipalID='".$agentId."'";

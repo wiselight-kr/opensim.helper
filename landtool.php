@@ -66,7 +66,7 @@ function buy_land_prep($method_name, $params, $app_data)
     # Validate Requesting user has a session
     #
 
-    $db = new DB;
+	$db = new DB(OPENSIM_DB_HOST, OPENSIM_DB_NAME, OPENSIM_DB_USER, OPENSIM_DB_PASS);
 
 	if ($db->exist_table("Presence")){
     	$db->query("SELECT UserID FROM Presence WHERE UserID='".$db->escape($agentid)."' AND SecureSessionID='".$db->escape($sessionid)."'");
@@ -126,7 +126,7 @@ function buy_land($method_name, $params, $app_data)
     # Validate Requesting user has a session
     #
 
-    $db = new DB;
+	$db = new DB(OPENSIM_DB_HOST, OPENSIM_DB_NAME, OPENSIM_DB_USER, OPENSIM_DB_PASS);
 
 	if ($db->exist_table("Presence")){
     	$db->query("SELECT UserID FROM Presence WHERE UserID='".$db->escape($agentid)."' AND SecureSessionID='".$db->escape($sessionid)."'");
