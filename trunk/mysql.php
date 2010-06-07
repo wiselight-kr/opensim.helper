@@ -44,7 +44,23 @@ class DB
 
 
 
-	function DB($connect=false, $timeout=60)
+
+	function DB($dbhost, $dbname, $dbuser, $dbpass, $connect=false, $timeout=60)
+	{
+		$this->Host 	= $dbhost;	
+		$this->Database = $dbname;	
+		$this->User 	= $dbuser;	
+		$this->Password = $dbpass;	
+
+		$this->Timeout  = $timeout;
+		//ini_set('mysql.connect_timeout', $timeout);
+
+		if ($connect) $this->connect();
+	}
+
+
+
+/*	function DB($connect=false, $timeout=60)
 	{
 		//$this->Host 	= OPENSIM_DB_HOST;	
 		//$this->Database = OPENSIM_DB_NAME;	
@@ -55,7 +71,7 @@ class DB
 		//ini_set('mysql.connect_timeout', $timeout);
 
 		if ($connect) $this->connect();
-	}
+	}*/
 
 
 
@@ -249,6 +265,24 @@ class DB
 
 		return $ret2;
 	}
+
+
+	
+	function get_update_time($table, $unixtime=true)
+	{
+		$update = null;
+		if ($unixtime) $update = 0;
+
+		$this->query("SHOW TABLE STATUS WHERE name='$table'");
+
+		if ($this->Errno==0) {
+			$table_status = $this->next_record();
+			$update = $table_status->Update_time;
+			if ($unixtime) $update = unix_timestamp($update);
+		}
+
+		return $update;
+	} 
 
 
 

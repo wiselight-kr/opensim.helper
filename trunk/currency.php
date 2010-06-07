@@ -50,7 +50,7 @@
 #
 
 include("./config.php");
-include("./mysql.php.php");
+include("./mysql.func.php");
 require("./helpers.php");
 
 ###################### No user serviceable parts below #####################
@@ -87,7 +87,7 @@ function get_currency_quote($method_name, $params, $app_data)
 	# Validate Requesting user has a session
 	#
 
-	$db = new DB;
+	$db = new DB(OPENSIM_DB_HOST, OPENSIM_DB_NAME, OPENSIM_DB_USER, OPENSIM_DB_PASS);
 
 	if ($db->exist_table("Presence")) {
 		$db->query("SELECT UserID FROM Presence WHERE UserID='".$db->escape($agentid)."' AND SecureSessionID='".$db->escape($sessionid)."'");
@@ -140,7 +140,7 @@ function buy_currency($method_name, $params, $app_data)
 	# Validate Requesting user has a session
 	#
 
-	$db = new DB;
+	$db = new DB(OPENSIM_DB_HOST, OPENSIM_DB_NAME, OPENSIM_DB_USER, OPENSIM_DB_PASS);
 
 	if ($db->exist_table("Presence")) {
 		$db->query("SELECT UserID FROM Presence WHERE UserID='".$db->escape($agentid)."' AND SecureSessionID='".$db->escape($sessionid)."'");
@@ -221,7 +221,8 @@ function balance_request($method_name, $params, $app_data)
     # Validate region secret
     #
 
-    $db = new DB;
+	$db = new DB(OPENSIM_DB_HOST, OPENSIM_DB_NAME, OPENSIM_DB_USER, OPENSIM_DB_PASS);
+
     $sql = "select UUID FROM regions WHERE UUID='".$db->escape($regionid)."' AND regionSecret='".$db->escape($secret)."'";
     $db->query($sql);
     list($region_id) = $db->next_record();
@@ -297,7 +298,7 @@ function region_move_money($method_name, $params, $app_data)
     # Validate region secret
     #
 
-    $db = new DB;
+	$db = new DB(OPENSIM_DB_HOST, OPENSIM_DB_NAME, OPENSIM_DB_USER, OPENSIM_DB_PASS);
 
     $sql = "SELECT UUID FROM regions WHERE UUID='".$db->escape($regionid)."' AND regionSecret='".$db->escape($secret)."'";
     $db->query($sql);
@@ -418,7 +419,7 @@ function claimUser_func($method_name, $params, $app_data)
     # Validate region secret
     #
 
-    $db = new DB;
+	$db = new DB(OPENSIM_DB_HOST, OPENSIM_DB_NAME, OPENSIM_DB_USER, OPENSIM_DB_PASS);
 
     $sql = "SELECT UUID FROM regions WHERE UUID='".$db->escape($regionid)."' AND regionSecret='".$db->escape($secret)."'";
     $db->query($sql);

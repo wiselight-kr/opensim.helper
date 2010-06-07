@@ -10,8 +10,7 @@ require_once('./mysql.func.php');
 
 
 
-$DbLink = new DB;
-$DbLink->set_DB(OFFLINE_DB_HOST, OFFLINE_DB_NAME, OFFLINE_DB_USER, OFFLINE_DB_PASS);
+$DbLink = new DB(OFFLINE_DB_HOST, OFFLINE_DB_NAME, OFFLINE_DB_USER, OFFLINE_DB_PASS);
 
 
 $method = $_SERVER["PATH_INFO"];
