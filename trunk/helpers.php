@@ -213,7 +213,7 @@ function move_money($sourceId, $destId, $amount, $aggregatePermInventory,
 
 function get_balance($avatarId)
 {
-    $db = new DB(CURRENCY_DB_HOST, CURRENCY_DB_NAME, CURRENCY_DB_USER, CURRENCY_DB_PASS);
+	$db = new DB(CURRENCY_DB_HOST, CURRENCY_DB_NAME, CURRENCY_DB_USER, CURRENCY_DB_PASS);
 
     $cash = 0;
     $sql = "SELECT SUM(amount) FROM ".CURRENCY_TRANSACTION_TBL." WHERE destId='".$db->escape($avatarId)."'";

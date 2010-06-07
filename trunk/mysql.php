@@ -245,7 +245,7 @@ class DB
 	
 	function get_update_time($table, $unixtime=true)
 	{
-		$update = null;
+		$update = "";
 		if ($unixtime) $update = 0;
 
 		$this->query("SHOW TABLE STATUS WHERE name='$table'");
@@ -253,7 +253,10 @@ class DB
 		if ($this->Errno==0) {
 			$table_status = $this->next_record();
 			$update = $table_status['Update_time'];
-			if ($unixtime) $update = strtotime($update);
+			if ($unixtime) {
+				if ($update!="") $update = strtotime($update);
+				else $update = 0;
+			}
 		}
 
 		return $update;
