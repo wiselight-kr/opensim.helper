@@ -11,8 +11,7 @@
 //I'd contact the original developer for licensing info, but his website is broken.
 
 //
-// Modified by Fumi.Iseki for CMS/LMS '10 3/29
-//                                    '10 5/24
+// Modified by Fumi.Iseki for CMS/LMS '10 3/29 - '10 6/8
 //
 
 
