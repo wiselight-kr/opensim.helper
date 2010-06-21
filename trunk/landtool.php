@@ -26,9 +26,10 @@
 
 // Modified by Fumi.Iseki for CMS/LMS '09 5/31
 
-include('./config.php');
-include('./mysql.func.php');
-require('./helpers.php');
+require_once('./config.php');
+require_once('./mysql.func.php');
+require_once('./helpers.php');
+
 
 ###################### No user serviceable parts below #####################
 #
