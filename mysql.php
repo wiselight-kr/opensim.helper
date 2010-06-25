@@ -34,7 +34,7 @@ class DB
 
 
 
-	function DB($dbhost=null, $dbname=null, $dbuser=null, $dbpass=null, $connect=false, $timeout=60)
+	function DB($dbhost=null, $dbname=null, $dbuser=null, $dbpass=null, $timeout=60)
 	{
 		$this->Host 	= $dbhost;	
 		$this->Database = $dbname;	
@@ -42,9 +42,7 @@ class DB
 		$this->Password = $dbpass;	
 
 		$this->Timeout  = $timeout;
-		//ini_set('mysql.connect_timeout', $timeout);
-
-		if ($connect) $this->connect();
+		ini_set('mysql.connect_timeout', $timeout);
 	}
 
 
@@ -267,7 +265,6 @@ class DB
 	//
 	// Timeout
 	//
-/*
 	function set_default_timeout($tm)
 	{
     	ini_set('mysql.connect_timeout', $tm);
@@ -287,7 +284,6 @@ class DB
 	{
     	ini_set('mysql.connect_timeout', $this->Timeout);
 	}
-*/
 
 }
 
