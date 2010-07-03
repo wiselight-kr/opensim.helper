@@ -26,8 +26,8 @@
 
 // Modified by Fumi.Iseki for CMS/LMS '09 5/31
 
-require_once('./config.php');
-require_once('./mysql.func.php');
+require_once('../include/config.php');
+require_once('../include/mysql.func.php');
 require_once('./helpers.php');
 
 
