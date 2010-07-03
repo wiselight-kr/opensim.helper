@@ -49,8 +49,8 @@
 # These match opensimwiredux
 #
 
-require_once("./config.php");
-require_once("./mysql.func.php");
+require_once("../include/config.php");
+require_once("../include/mysql.func.php");
 require_once("./helpers.php");
 
 
