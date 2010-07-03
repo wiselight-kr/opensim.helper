@@ -177,13 +177,16 @@ class DB
 
 
 
-	function exist_table($table)
+	function exist_table($table, $lower_case=true)
 	{
 		$ret = false;
+
+		if ($lower_case) $table = strtolower($table);
 
 		$this->query('SHOW TABLES');
 		if ($this->Errno==0) {
 			while (list($db_tbl) = $this->next_record()) {
+				if ($lower_case) $db_tbl = strtolower($db_tbl);
 				if ($db_tbl==$table) {
 					$ret = true;
 					break;
@@ -208,14 +211,20 @@ class DB
 
 
 
-	function exist_field($table, $field)
+	function exist_field($table, $field, $lower_case=true)
 	{
 		$ret1 = false;
 		$ret2 = false;
 
+		if ($lower_case) {
+			$table = strtolower($table);
+			$field = strtolower($field);
+		}
+
 		$this->query('SHOW TABLES');
 		if ($this->Errno==0) {
 			while (list($db_tbl) = $this->next_record()) {
+				if ($lower_case) $db_tbl = strtolower($db_tbl);
 				if ($db_tbl==$table) {
 					$ret1 = true;
 					break;
@@ -227,6 +236,7 @@ class DB
 			$this->query('SHOW COLUMNS FROM '.$table);
 			if ($this->Errno==0) {
 				while (list($db_fld) = $this->next_record()) {
+					if ($lower_case) $db_fld = strtolower($db_fld);
 					if ($db_fld==$field) {
 						$ret2 = true;
 						break;
