@@ -216,16 +216,14 @@ class DB
 		$ret1 = false;
 		$ret2 = false;
 
-		if ($lower_case) {
-			$table = strtolower($table);
-			$field = strtolower($field);
-		}
+		if ($lower_case) $cmp_table = strtolower($table);
+		else             $cmp_table = $table;
 
 		$this->query('SHOW TABLES');
 		if ($this->Errno==0) {
 			while (list($db_tbl) = $this->next_record()) {
 				if ($lower_case) $db_tbl = strtolower($db_tbl);
-				if ($db_tbl==$table) {
+				if ($db_tbl==$cmp_table) {
 					$ret1 = true;
 					break;
 				}
@@ -236,7 +234,6 @@ class DB
 			$this->query('SHOW COLUMNS FROM '.$table);
 			if ($this->Errno==0) {
 				while (list($db_fld) = $this->next_record()) {
-					if ($lower_case) $db_fld = strtolower($db_fld);
 					if ($db_fld==$field) {
 						$ret2 = true;
 						break;
