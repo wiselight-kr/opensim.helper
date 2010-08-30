@@ -1,13 +1,19 @@
 <?php
 
 require_once('../include/config.php');
-require_once('../include/mysql.func.php');
-
+require_once('../include/xoopensim.func.php');
 
 
 //$request_xml = $HTTP_RAW_POST_DATA;
 //error_log("offline.php: ".$request_xml);
 
+
+//
+if (!opensim_is_access_from_region_server()) {
+	$remote_addr = $_SERVER["REMOTE_ADDR"];
+	error_log("offline.php: Illegal access from ".$remote_addr);
+	exit;
+}
 
 
 $DbLink = new DB(OFFLINE_DB_HOST, OFFLINE_DB_NAME, OFFLINE_DB_USER, OFFLINE_DB_PASS);
@@ -46,6 +52,7 @@ if ($method == "/RetrieveMessages/") {
 		 "<ArrayOfGridInstantMessage xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">";
     while(list($message) = $DbLink->next_record()) {
         echo $message;
+error_log("offline.php: ".$message);
     }
     echo "</ArrayOfGridInstantMessage>";
        
