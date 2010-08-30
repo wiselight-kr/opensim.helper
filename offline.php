@@ -18,8 +18,8 @@ if (!opensim_is_access_from_region_server()) {
 
 $DbLink = new DB(OFFLINE_DB_HOST, OFFLINE_DB_NAME, OFFLINE_DB_USER, OFFLINE_DB_PASS);
 
-
 $method = $_SERVER["PATH_INFO"];
+
 
 if ($method == "/SaveMessage/") {
 	$msg = $HTTP_RAW_POST_DATA;
@@ -27,41 +27,50 @@ if ($method == "/SaveMessage/") {
 
 	if ($start != -1) {
 		$start+=2;
-		$msg = substr($msg, $start);
+		$msg   = substr($msg, $start);
 		$parts = split("[<>]", $msg);
 		$from_agent = $parts[4];
 		$to_agent   = $parts[12];
-        $DbLink->query("INSERT INTO ".OFFLINE_MESSAGE_TBL." (to_uuid, from_uuid, message) ".
-					   "VALUES ('".mysql_escape_string($to_agent)."','".mysql_escape_string($from_agent)."','".mysql_escape_string($msg)."')");
-        echo "<?xml version=\"1.0\" encoding=\"utf-8\"?><boolean>true</boolean>";
-    }
-    else {
-        echo "<?xml version=\"1.0\" encoding=\"utf-8\"?><boolean>false</boolean>";
-    }
-    exit;
+
+		if (isGUID($from_agent) and isGUID($to_agent)) {
+			$query_str = "INSERT INTO ".OFFLINE_MESSAGE_TBL." (to_uuid,from_uuid,message) VALUES ('".$to_agent."','".$from_agent."','".mysql_escape_string($msg)."')";
+			$DbLink->query($query_str);
+
+			if ($DbLink->Errno==0) {
+				echo '<?xml version="1.0" encoding="utf-8"?><boolean>true</boolean>';
+				exit;
+			}
+		}
+	}
+
+	echo '<?xml version="1.0" encoding="utf-8"?><boolean>false</boolean>';
+	exit;
 }
+
 
 if ($method == "/RetrieveMessages/") {
-    $parms = $HTTP_RAW_POST_DATA;
-    $parts = split("[<>]", $parms);
-    $agent_id = $parts[6];
-       
-    $DbLink->query("SELECT message FROM ".OFFLINE_MESSAGE_TBL." WHERE to_uuid='".mysql_escape_string($agent_id)."'");
+	$parms = $HTTP_RAW_POST_DATA;
+	$parts = split("[<>]", $parms);
+	$agent_id = $parts[6];
+	   
+	echo '<?xml version="1.0" encoding="utf-8"?>';
+	echo '<ArrayOfGridInstantMessage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">';
 
-    echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>".
-		 "<ArrayOfGridInstantMessage xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">";
-    while(list($message) = $DbLink->next_record()) {
-        echo $message;
-error_log("offline.php: ".$message);
-    }
-    echo "</ArrayOfGridInstantMessage>";
-       
-    $DbLink->query("DELETE FROM ".OFFLINE_MESSAGE_TBL." WHERE to_uuid='".mysql_escape_string($agent_id)."'");
-    exit;
+	if (isGUID($agent_id)) {
+		$DbLink->query("SELECT message FROM ".OFFLINE_MESSAGE_TBL." WHERE to_uuid='".$agent_id."'");
+
+		while(list($message) = $DbLink->next_record()) {
+			echo $message;
+		}
+	}
+
+	echo '</ArrayOfGridInstantMessage>';
+	   
+	if (isGUID($agent_id)) {
+		$DbLink->query("DELETE FROM ".OFFLINE_MESSAGE_TBL." WHERE to_uuid='".$agent_id."'");
+	}
+	exit;
 }
-
-
-$DbLink->close();
 
 
 ?>
