@@ -1,7 +1,7 @@
 <?php
 
 require_once('../include/config.php');
-require_once('../include/xoopensim.func.php');
+require_once('../include/opensim.mysql.php');
 
 
 //$request_xml = $HTTP_RAW_POST_DATA;
