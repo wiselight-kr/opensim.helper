@@ -52,21 +52,24 @@ if ($method == "/RetrieveMessages/") {
 	$parms = $HTTP_RAW_POST_DATA;
 	$parts = split("[<>]", $parms);
 	$agent_id = $parts[6];
-	   
-	echo '<?xml version="1.0" encoding="utf-8"?>';
-	echo '<ArrayOfGridInstantMessage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">';
+	$errno = -1;
 
 	if (isGUID($agent_id)) {
 		$DbLink->query("SELECT message FROM ".OFFLINE_MESSAGE_TBL." WHERE to_uuid='".$agent_id."'");
+		$errno = $DbLink->Errno;
+	}
 
+	echo '<?xml version="1.0" encoding="utf-8"?>';
+	echo '<ArrayOfGridInstantMessage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">';
+
+	if ($errno==0) {
 		while(list($message) = $DbLink->next_record()) {
 			echo $message;
 		}
 	}
-
 	echo '</ArrayOfGridInstantMessage>';
 	   
-	if (isGUID($agent_id)) {
+	if ($errno==0) {
 		$DbLink->query("DELETE FROM ".OFFLINE_MESSAGE_TBL." WHERE to_uuid='".$agent_id."'");
 	}
 	exit;
