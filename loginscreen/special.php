@@ -2,7 +2,7 @@
   <tbody>
   <tr>
     <td vAlign=top align=right>
-      <table width=100% height="100" border=0 cellPadding=0 cellSpacing=0>
+      <table width=100% height="120" border=0 cellPadding=0 cellSpacing=0>
         <tbody>
         <tr>
           <td class=gridbox_tl><img height=5 src="images/login_screens/spacer.gif" width=5 /></td>
