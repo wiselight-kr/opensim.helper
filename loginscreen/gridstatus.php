@@ -15,12 +15,12 @@
             <table cellSpacing=0 cellPadding=1 width="100%" border=0>
               <tbody>
               <tr>
-                <td class=gridtext align=left><strong>GRID STATUS:</strong></td>
+                <td class=gridtext align=left><strong><?php echo $DB_STATUS_TTL?> :</strong></td>
                 <td class=gridtext align=right>
-				  <?php if($GRIDSTATUS == '1'){?>
-				    <span class=ONLINE>ONLINE</span>
-				  <?php }else {?>
-				    <span class=OFFLINE>OFFLINE</span>
+				  <?php if($GRID_STATUS) {?>
+				    <span class=ONLINE><?php echo $ONLINE?></span>
+				  <?php } else {?>
+				    <span class=OFFLINE><?php echo $OFFLINE?></span>
 				  <?php } ?>
 				</td>
               </tr>
@@ -31,20 +31,20 @@
             <table cellSpacing=0 cellPadding=0 width="100%" border=0>
               <tbody>
               <tr bgColor=#151515>
-                <td class=gridtext vAlign=top noWrap align=left>Total Users:</td>
-                <td class=gridtext vAlign=top noWrap align=right width="1%"><?php echo $USERCOUNT?></td>
+                <td class=gridtext vAlign=top noWrap align=left><?php echo $TOTAL_USER_TTL?> :</td>
+                <td class=gridtext vAlign=top noWrap align=right width="1%"><?php echo $USER_COUNT?></td>
               </tr>
               <tr bgColor=#000000>
-                <td class=gridtext vAlign=top noWrap align=left>Total Regions:</td>
-                <td class=gridtext vAlign=top noWrap align=right width="1%"><?php echo $REGIONSCOUNT?></td>
+                <td class=gridtext vAlign=top noWrap align=left><?php echo $TOTAL_REGION_TTL?> :</td>
+                <td class=gridtext vAlign=top noWrap align=right width="1%"><?php echo $REGION_COUNT?></td>
               </tr>
               <tr bgColor=#151515>
-                <td class=gridtext vAlign=top noWrap align=left>Unique Visitors last 30 days:</td>
-                <td class=gridtext vAlign=top noWrap align=right width="1%"><?php echo $LASTMONTHONLINE?></td>
+                <td class=gridtext vAlign=top noWrap align=left><?php echo $LAST_USERS_TTL?> :</td>
+                <td class=gridtext vAlign=top noWrap align=right width="1%"><?php echo $LASTMONTH_ONLINE?></td>
               </tr>
 			  <tr bgColor=#000000>
-                <td class=gridtext vAlign=top noWrap align=left><strong>Online Now:</strong></td>
-                <td class=gridtext vAlign=top noWrap align=right width="1%"><strong><?php echo $NOWONLINE?></strong></td>
+                <td class=gridtext vAlign=top noWrap align=left><strong><?php echo $ONLINE_TTL?> :</strong></td>
+                <td class=gridtext vAlign=top noWrap align=right width="1%"><strong><?php echo $NOW_ONLINE?></strong></td>
               </tr>
 			  </tbody>
             </table>
