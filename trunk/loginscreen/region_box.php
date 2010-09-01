@@ -78,7 +78,7 @@ if(!isset($_GET['regio'])){
         </tr>
         <tr>
           <td class=gridbox_bl><img height=5 src="images/login_screens/spacer.gif" width=5 /></td>
-          <td class=gridbox_b><span class="gridbox_br"><img height="5" src="images/login_screens/spacer.gif" width="5" /></span></td>
+          <td class=gridbox_b ><span class="gridbox_br"><img height="5" src="images/login_screens/spacer.gif" width="5" /></span></td>
           <td class=gridbox_br><img height=5 src="images/login_screens/spacer.gif" width=5 /></td>
         </tr>
         </tbody>
