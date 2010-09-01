@@ -14,8 +14,7 @@
           <td class=black_content>
             <div style=" border:hidden; color:#ffffff; padding:0px; width:300px; height:90px; overflow:auto; ">
               <center>
-              At this moment we would like to ask you<br>to go to the website and make<br>sure that you have your email registered<p>
-              Visit <a target = _new href = http://wwww.nsl.tuis.ac.jp/>the website</a> for more information
+                <?php echo $LOGIN_SCREEN_CONTENT?>
               </center>
             </div>
           </td>
