@@ -46,6 +46,7 @@ $REGION_COUNT 	  = $status['region_count'];
 <div id=top_image>
   <img height=139 src="images/login_screens/logo.png" width=307 />
 </div>
+
 <div id=bottom_left>
   <?php include("loginscreen/special.php"); ?>
   <br />
@@ -55,14 +56,6 @@ $REGION_COUNT 	  = $status['region_count'];
 </div>
 
 <img id=mainImage src="images/login_screens/spacer.gif" /> 
-
-<!--
-<div id=bottom>
-  <div id=news>
-    <?php include("loginscreen/news.php"); ?>
-  </div>
-</div>
--->
 
 <div id=topright>
   <br />
