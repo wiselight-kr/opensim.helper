@@ -7,7 +7,7 @@
   </tr>
   <tr>
     <td class=gridbox_l></td>
-    <td class=black_content vAlign=top align=left><strong><?php echo SYSNAME?> News:</strong> 
+    <td class=black_content vAlign=top align=left><strong><?php echo $NEWS_TITLE?> :</strong> 
       <div id=GREX style="MARGIN: 5px 0px 0px"><img height=1 src="images/login_screens/spacer.gif" width=1 /></div>
       <table class=newslist cellSpacing=0 cellPadding=0>
         <tbody>

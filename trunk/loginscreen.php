@@ -10,7 +10,7 @@ $LOGIN_SCREEN_CONTENT = "hero hero";
 
 $BOX_TITLE		= _MD_XPNSM_LGSN_BOX_TTL;
 $BOX_COLOR		= "green";
-$BOX_INFOTEXT	= "BOX_INFOTEXT";
+$BOX_INFOTEXT	= "BOX_INFOTEXT<br /> sssss<br /><br /><br /><br />SSSSSSSSSS";
 
 $DB_STATUS_TTL	  = _MD_XPNSM_DB_STATUS;
 $ONLINE  		  = _MD_XPNSM_ONLINE_TTL;
@@ -36,12 +36,10 @@ $REGION_COUNT 	  = $status['region_count'];
 <link  href="loginscreen/style.css" type=text/css rel=stylesheet />
 <script src="loginscreen/resize.js" type=text/javascript></script>
 <script src="loginscreen/imageswitch.js" type=text/javascript></script>
-<script src="loginscreen/need_new_version.js" type=text/javascript></script>
 
 <script>
 	$(document).ready(function(){
 		bgImgRotate();
-		$("#blog_box").show();
 	});
 </script>
 
@@ -58,11 +56,13 @@ $REGION_COUNT 	  = $status['region_count'];
 
 <img id=mainImage src="images/login_screens/spacer.gif" /> 
 
+<!--
 <div id=bottom>
   <div id=news>
     <?php include("loginscreen/news.php"); ?>
   </div>
 </div>
+-->
 
 <div id=topright>
   <br />
