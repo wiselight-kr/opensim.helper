@@ -6,7 +6,7 @@
         <tbody>
         <tr>
           <td class=gridbox_tl><img height=5 src="images/login_screens/spacer.gif" width=5 /></td>
-          <td class=gridbox_t> <img height=5 src="images/login_screens/spacer.gif" width=5 /></td>
+          <td class=gridbox_t ><img height=5 src="images/login_screens/spacer.gif" width=5 /></td>
           <td class=gridbox_tr><img height=5 src="images/login_screens/spacer.gif" width=5 /></td>
         </tr>
         <tr>

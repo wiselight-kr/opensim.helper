@@ -40,47 +40,9 @@ $REGION_COUNT 	  = $status['region_count'];
 
 <script>
 	$(document).ready(function(){
-
-	bgImgRotate();
-	if ( document.getElementById('update_box') && (os != "" || channel != "" || version != "") )
-	{
-		var DLurl = get_url(os, channel, version);
-		var version_info = $.ajax({ url: DLurl, async: false }).responseText.split("||");
-		var DLurlString = "<a href='"+version_info[1]+"' target='_blank'>"+"Download Version "+version_info[0]+"</a>";
-		var releaseNotesLink = "<a href='"+getReleaseNotesUrl(channel, version_info[0])+"' target='_blank'>"+"Read the release notes</a>";
-
-		if(versionIsNewer(version_info[0], version) && (version_info[2]==true))
-		{
-			$.ajax({
-				url: "/app/login/_includes/update_available_box.php?lang=en-US",
-				cache: false,
-				success: function(html){
-					$("#update_box").append(html);
-					$("#url").append(DLurlString);
-					$("#release_notes").append(releaseNotesLink);
-				}
-			});
-		}
-		else if(versionIsNewer(version_info[0], version) && (version_info[2]==false))
-		{
-			$.ajax({
-				url: "/app/login/_includes/update_required_box.php?lang=en-US",
-				cache: false,
-				success: function(html){
-					$("#update_box").append(html);
-					$("#url").append(DLurlString);
-					$("#release_notes").append(releaseNotesLink);
-				}
-			});
-		}
-		else
-		{
-			$("#update_box").load("/app/login/_includes/blog_statusblog.php");
-		}
-	}
-
-	$("#blog_box").show();
-});
+		bgImgRotate();
+		$("#blog_box").show();
+	});
 </script>
 
 <div id=top_image>
