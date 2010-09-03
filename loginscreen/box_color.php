@@ -5,16 +5,16 @@ if ($BOX_COLOR=="" or  ($BOX_COLOR!="white" and $BOX_COLOR!="green" and $BOX_COL
 
 $color_box = "box".$BOX_COLOR;
 ?>
-<table cellSpacing=0 cellPadding=0 width=300 border=0>
+<table cellSpacing=0 cellPadding=0 width=300 border=0 align=center>
   <tbody>
   <tr>
-    <td vAlign=top align=right>
+    <td vAlign=top align=left>
       <table cellSpacing=0 cellPadding=0 width=300 border=0>
         <tbody>
         <tr>
-          <td class=<?php echo $color_box?>_tl><img height=5 src="images/login_screens/icons/spacer.gif" width=5 /></td>
-          <td class=<?php echo $color_box?>_t ><img height=5 src="images/login_screens/icons/spacer.gif" width=5 /></td>
-          <td class=<?php echo $color_box?>_tr><img height=5 src="images/login_screens/icons/spacer.gif" width=5 /></td>
+          <td class=<?php echo $color_box?>_tl><img height=11 src="images/login_screens/icons/spacer.gif" width=5 /></td>
+          <td class=<?php echo $color_box?>_t ><img height=11 src="images/login_screens/icons/spacer.gif" width=5 /></td>
+          <td class=<?php echo $color_box?>_tr><img height=11 src="images/login_screens/icons/spacer.gif" width=5 /></td>
         </tr>
         <tr>
           <td class=<?php echo $color_box?>_l></td>
@@ -36,3 +36,4 @@ $color_box = "box".$BOX_COLOR;
   </tr>
   </tbody>
 </table>
+
