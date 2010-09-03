@@ -3,6 +3,7 @@
 <head>
 <title>Login Screen for OpenSim</title>
 <link  href="loginscreen/style.css" type=text/css rel=stylesheet />
+<link  href="loginscreen/info_alert_box.css" type=text/css rel=stylesheet />
 <script src="loginscreen/resize.js" type=text/javascript></script>
 <script src="loginscreen/imageswitch.js" type=text/javascript></script>
 </head>
