@@ -6,10 +6,9 @@ BODY {
 }
 BODY {
 	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; FONT-SIZE: 62.5%; PADDING-BOTTOM: 0px; MARGIN: 0px; WIDTH: 100%; PADDING-TOP: 0px; FONT-FAMILY: verdana, helvetica, sans-serif
-/*; BACKGROUND-COLOR: #000000*/
 }
 #GREX {
-	BACKGROUND-IMAGE: url(../images/login_screens/icons/grey_dot.png); MARGIN: 0px; BACKGROUND-REPEAT: repeat-x
+	BACKGROUND-IMAGE: url(../images/login_screens/icons/grey_dot.png); MARGIN: 0px; BACKGROUND-REPEAT: repeat-x; PADDING-BOTTOM: 0px
 }
 #topright {
 	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; Z-INDEX: 30; RIGHT: 10px; PADDING-BOTTOM: 0px; MARGIN: 0px; COLOR: #cccccc; PADDING-TOP: 0px; POSITION: absolute; TOP: 45px
@@ -87,7 +86,7 @@ TD.gridbox_br {
 	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; Z-INDEX: 71; PADDING-BOTTOM: 0px; MARGIN: 0px 0px 7px; PADDING-TOP: 0px; POSITION: relative
 }
 .boxtext {
-	PADDING-RIGHT: 3px; PADDING-LEFT: 3px; PADDING-BOTTOM: 1px; PADDING-TOP: 2px; TEXT-ALIGN: left
+	PADDING-RIGHT: 3px; PADDING-LEFT: 3px; PADDING-BOTTOM: 1px; PADDING-TOP: 10px; TEXT-ALIGN: left; FONT-SIZE: 11px
 }
 .black_content {
 	FONT-SIZE: 1.2em; COLOR: #ccc; BACKGROUND-COLOR: #000

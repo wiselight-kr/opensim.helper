@@ -20,8 +20,8 @@ $color_box = "box".$BOX_COLOR;
           <td class=<?php echo $color_box?>_l></td>
           <td class=black_content>
             <img src="../images/login_screens/icons/alert.png" align=absMiddle />&nbsp;<strong><?php echo $BOX_TITLE?></strong> 
-            <div id=GREX style="margin: 1px 0px 0px"><img height=1 src="../images/login_screens/icons/spacer.gif" width=1 /></div>
-            <div class=boxtext><p style="font-size: 11px"><?php echo $BOX_INFOTEXT?></p></div>
+            <div id=GREX style="margin: 1px 0px 0px"><img height=11 src="../images/login_screens/icons/spacer.gif" width=1 /><div>
+            <div class=boxtext><?php echo $BOX_INFOTEXT?></div>
           </td>
           <td class=<?php echo $color_box?>_r></td>
         </tr>
