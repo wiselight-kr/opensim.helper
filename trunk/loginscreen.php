@@ -40,7 +40,7 @@
   <div id=Infobox>
     <?php 
       if ($BOX_INFOTEXT!="") {
-        include("loginscreen/box_color.php"); 
+        include("loginscreen/color_box.php"); 
       }
     ?>
   </div>
