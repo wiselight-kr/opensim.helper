@@ -2,7 +2,6 @@
 if ($BOX_COLOR=="" or  ($BOX_COLOR!="white" and $BOX_COLOR!="green" and $BOX_COLOR!="red" and $BOX_COLOR!="yellow")) {
 	$BOX_COLOR = "white";
 }
-
 $color_box = "box".$BOX_COLOR;
 ?>
 <table cellSpacing=0 cellPadding=0 width=300 border=0 align=center>
