@@ -40,7 +40,7 @@
   <br />
   <div id=Infobox>
     <?php 
-      if ($BOX_INFOTEXT!="") {
+      if ($BOX_INFOTEXT!="" or $BOX_TITLE!="") {
         include("loginscreen/alert_box.php"); 
       }
     ?>
