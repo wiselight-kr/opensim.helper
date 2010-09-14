@@ -32,8 +32,6 @@
 
 <div id=topright>
   <br />
-  <div id="updatebox"></div>
-  <br />
   <br />
   <div id=gridstatus>
     <?php include("loginscreen/gridstatus.php"); ?>
