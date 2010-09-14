@@ -1,7 +1,7 @@
-<table cellSpacing=0 cellPadding=0 width=300 border=0 align=center>
+<table cellSpacing=0 cellPadding=0 width=300 border=0>
   <tbody>
   <tr>
-    <td vAlign=top align=left>
+    <td valign=top align=left>
       <table cellSpacing=0 cellPadding=0 width=300 border=0>
         <tbody>
         <tr>
