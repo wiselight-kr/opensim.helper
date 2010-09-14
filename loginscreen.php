@@ -1,6 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
 
 <head>
+<meta http-equiv=content-type content="text/html; charset=UTF-8">
 <title>Login Screen for OpenSim</title>
 <link  href="loginscreen/style.css" type=text/css rel=stylesheet />
 <link  href="loginscreen/alert_box.css" type=text/css rel=stylesheet />
