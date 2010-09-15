@@ -31,6 +31,11 @@ require_once('../include/mysql.func.php');
 require_once('./helpers.php');
 
 
+// for Debug
+//$request_xml = $HTTP_RAW_POST_DATA;
+//error_log("landtool.php: ".$request_xml);
+
+
 ###################### No user serviceable parts below #####################
 #
 # The XMLRPC server object
