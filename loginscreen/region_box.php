@@ -36,7 +36,7 @@ if(!isset($_GET['regio'])){
                 <td width="20%" align=left class=regiontoptext>
                   <div align="center"><a style="cursor:pointer" onclick="document.location.href='?regio=x'"><strong>X</strong></a></div>
                 </td>
-                <td width="20%" align=right class=regiontoptext>
+                <td width="20%" align=left class=regiontoptext>
                   <div align="center"><a style="cursor:pointer" onclick="document.location.href='?regio=y'"><strong>Y</strong></a></div>
                 </td>
               </tr>
