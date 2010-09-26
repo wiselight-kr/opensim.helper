@@ -49,7 +49,7 @@
 # These match opensimwiredux
 #
 
-require_once("../include/cms_interface.php");
+require_once('../include/cms_interface.php');
 require_once("./helpers.php");
 
 
