@@ -50,7 +50,7 @@
 #
 
 require_once('../include/cms_interface.php');
-require_once("./helpers.php");
+require_once('./helpers.php');
 
 
 ###################### No user serviceable parts below #####################
