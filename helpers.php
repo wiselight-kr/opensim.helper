@@ -47,9 +47,9 @@ function process_transaction($avatarId, $amount, $ipAddress)
 	# 5 dollars will be 500
 	# 15 dollars will be 1500
 
-	$banker_avatar = cms_get_config("banker_avatar");
+	//$banker_avatar = cms_get_config("banker_avatar");
 
-	if ($avatarId==$banker_vatar) return true;
+	//if ($avatarId==$banker_vatar) return true;
 
 	//return false;
 	return true;
