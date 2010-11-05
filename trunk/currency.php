@@ -76,8 +76,8 @@ xmlrpc_server_register_method($xmlrpc_server, "getCurrencyQuote", "get_currency_
 
 function get_currency_quote($method_name, $params, $app_data)
 {
-	$confirmvalue = "1234567883789";
-	//$confirmvalue = cms_get_config("currency_key");
+	$confirmvalue = cms_get_config("currency_key");
+	if ($confirmvalue=="") $confirmvalue = "1234567883789";
 
 	$req       = $params[0];
 	$agentid   = $req['agentId'];
@@ -126,9 +126,9 @@ xmlrpc_server_register_method($xmlrpc_server, "buyCurrency", "buy_currency");
 
 function buy_currency($method_name, $params, $app_data)
 {
-	//global $economy_source_account;
-	//global $minimum_real;
-	//global $low_amount_error;
+	global $economy_source_account;
+	global $minimum_real;
+	global $low_amount_error;
 
 	$req       = $params[0];
 	$agentid   = $req['agentId'];
