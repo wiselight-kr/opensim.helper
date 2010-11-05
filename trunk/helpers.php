@@ -47,7 +47,12 @@ function process_transaction($avatarId, $amount, $ipAddress)
 	# 5 dollars will be 500
 	# 15 dollars will be 1500
 
-	return True;
+	$banker_avatar = cms_get_config("banker_avatar");
+
+	if ($avatarId==$banker_vatar) return true;
+
+	//return false;
+	return true;
 }
 
 ###################### No user serviceable parts below #####################
@@ -148,9 +153,9 @@ function user_alert($agentId, $soundId, $text)
 
 
 
-function move_money($sourceId, $destId, $amount, $aggregatePermInventory,
-		$aggregatePermNextOwner, $flags, $transactionType, $description,
-		$regionGenerated,$ipGenerated)
+function move_money($sourceId, $destId, $amount, 
+			$aggregatePermInventory, $aggregatePermNextOwner, $flags, $transactionType, 
+			$description, $regionGenerated, $ipGenerated)
 {
 	$db = new DB(OPENSIM_DB_HOST, OPENSIM_DB_NAME, OPENSIM_DB_USER, OPENSIM_DB_PASS);
 
@@ -211,6 +216,37 @@ function move_money($sourceId, $destId, $amount, $aggregatePermInventory,
 
 
 
+
+function add_money($destId, $amount, 
+		$aggregatePermInventory, $aggregatePermNextOwner, $flags, $transactionType, 
+		$description, $regionGenerated, $ipGenerated)
+{
+	$sourceId = "00000000-0000-0000-0000-000000000000";
+	$db = new DB(CURRENCY_DB_HOST, CURRENCY_DB_NAME, CURRENCY_DB_USER, CURRENCY_DB_PASS);
+
+	# Add Cash to one account
+	$sql = "INSERT INTO ".CURRENCY_TRANSACTION_TBL." (sourceId,destId,amount,flags,".
+			"aggregatePermInventory,aggregatePermNextOwner,transactionType,".
+			"description,timeOccurred,RegionGenerated,ipGenerated) ".
+			"VALUES ('".
+				$db->escape($sourceId)."','".
+				$db->escape($destId)."',".
+				$db->escape($amount).",".
+				$db->escape($aggregatePermInventory).",".
+				$db->escape($aggregatePermNextOwner).",".
+				$db->escape($flags).",".
+				$db->escape($transactionType).",'".
+				$db->escape($description)."',".
+				time().",'".
+				"','".
+				$db->escape($ipGenerated)."')";
+	$db->query($sql);
+	$db->close();
+}
+
+
+
+
 function get_balance($avatarId)
 {
 	$db = new DB(CURRENCY_DB_HOST, CURRENCY_DB_NAME, CURRENCY_DB_USER, CURRENCY_DB_PASS);
@@ -234,8 +270,8 @@ function do_call($host, $port, $uri, $request)
     	$dec = explode(":", $uri);
     	if (!strncasecmp($dec[0], "http", 4)) $url = "$dec[0]:$dec[1]";
 	}   
-	if ($url=="") $url ="http://$serverIP";
-	$url = "$url:$serverHttpPort/";
+	if ($url=="") $url ="http://$host";
+	$url = "$url:$port/";
 
     $header[] = "Content-type: text/xml";
     $header[] = "Content-length: ".strlen($request);

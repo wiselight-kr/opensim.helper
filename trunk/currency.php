@@ -77,6 +77,7 @@ xmlrpc_server_register_method($xmlrpc_server, "getCurrencyQuote", "get_currency_
 function get_currency_quote($method_name, $params, $app_data)
 {
 	$confirmvalue = "1234567883789";
+	//$confirmvalue = cms_get_config("currency_key");
 
 	$req       = $params[0];
 	$agentid   = $req['agentId'];
@@ -103,7 +104,6 @@ function get_currency_quote($method_name, $params, $app_data)
 		$currency = array('estimatedCost'=> $estimatedcost, 'currencyBuy'=> $amount);
 		header("Content-type: text/xml");
 		$response_xml = xmlrpc_encode(array('success'=> True, 'currency'=> $currency, 'confirm'=> $confirmvalue));
-		//error_log("1:->".$response_xml);
 		echo $response_xml;
 	}
 	else {
@@ -111,12 +111,12 @@ function get_currency_quote($method_name, $params, $app_data)
 		$response_xml = xmlrpc_encode(array('success'	  => False,
 											'errorMessage'=> "Unable to Authenticate\n\nClick URL for more info.",
 											'errorURI'	  => "".SYSURL.""));
-		//error_log("2:-> $sql<br />".$response_xml);
 		echo $response_xml;
 	}
 
 	return "";
 }
+
 
 
 #
@@ -126,9 +126,9 @@ xmlrpc_server_register_method($xmlrpc_server, "buyCurrency", "buy_currency");
 
 function buy_currency($method_name, $params, $app_data)
 {
-	global $economy_source_account;
-	global $minimum_real;
-	global $low_amount_error;
+	//global $economy_source_account;
+	//global $minimum_real;
+	//global $low_amount_error;
 
 	$req       = $params[0];
 	$agentid   = $req['agentId'];
@@ -152,24 +152,26 @@ function buy_currency($method_name, $params, $app_data)
 	$db->close();
 
 	if ($UUID) {
+/*
 		$cost = convert_to_real($amount);
 		if ($cost<$minimum_real) {
 			$error=sprintf($low_amount_error, $minimum_real/100.0);
 			header("Content-type: text/xml");
 			$response_xml = xmlrpc_encode(array('success'=> False, 'errorMessage'=> $error, 'errorURI'=> "".SYSURL.""));
-			//error_log("3:->".$response_xml);
 			echo $response_xml;
 			return "";
 		}
+*/
 
-		$transactionResult = process_transaction($agentid,$cost,$ipAddress);
+		$cost = 0;
+		$transactionResult = process_transaction($agentid, $cost, $ipAddress);
 		
 		if ($transactionResult) {
 			header("Content-type: text/xml");
 			$response_xml = xmlrpc_encode(array('success' => True));
-			//error_log("4:->".$response_xml);
 			echo $response_xml;
-			move_money($economy_source_account, $agentid, $amount, 0, 0, 0, 0, "Currency purchase",0,$ipAddress);
+			//move_money($economy_source_account, $agentid, $amount, 0, 0, 0, 0, "Currency purchase", 0, $ipAddress);
+			add_money($agentid, $amount, 0, 0, 0, 0, "Transfer to Banker Avatar", 0, $ipAddress);
 			update_simulator_balance($agentid);
 		}
 		else {
@@ -177,7 +179,6 @@ function buy_currency($method_name, $params, $app_data)
 			$response_xml = xmlrpc_encode(array('success'      => False,
 												'errorMessage' => "We were unable to process the transaction.  The gateway denied your charge",
 												'errorURI'     => "".SYSURL.""));
-			//error_log("5:->".$response_xml);
 			echo $response_xml;
 		}
 	}
@@ -186,7 +187,6 @@ function buy_currency($method_name, $params, $app_data)
 		$response_xml = xmlrpc_encode(array('success'      => False,
 											'errorMessage' => "Unable to Authenticate\n\nClick URL for more info.",
 											'errorURI'     => "".SYSURL.""));
-		//error_log("6:->".$response_xml);
 		echo $response_xml;
 	}
 	
@@ -261,7 +261,6 @@ function balance_request($method_name, $params, $app_data)
 	$db->close();
 
     header("Content-type: text/xml");
-	//error_log("7:->".$response_xml);
     echo $response_xml;
 
     return "";
@@ -390,7 +389,6 @@ function region_move_money($method_name, $params, $app_data)
 	$db->close();
 
 	header("Content-type: text/xml");
-	//error_log("8:->".$response_xml);
 	echo $response_xml;
 	
 	$stri = update_simulator_balance($agentid);
@@ -466,18 +464,18 @@ function claimUser_func($method_name, $params, $app_data)
 	$db->close();
 
 	header("Content-type: text/xml");
-	//error_log("9:->".$response_xml);
 	echo $response_xml;
 	
 	return "";
 }
+
 
 #
 # Process the request
 #
 
 $request_xml = $HTTP_RAW_POST_DATA;
-//error_log("currency.php: ".$request_xml);
+error_log("currency.php: ".$request_xml);
 
 xmlrpc_server_call_method($xmlrpc_server, $request_xml, '');
 xmlrpc_server_destroy($xmlrpc_server);
