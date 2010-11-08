@@ -1,0 +1,5 @@
+
+<Files ~ "\.(png|jpg)$">
+Header set Cache-Control no-cache
+#Header set Pragma no-cache
+</Files>
