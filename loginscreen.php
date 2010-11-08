@@ -2,6 +2,7 @@
 
 <head>
 <meta http-equiv="content-type"  content="text/html; charset=UTF-8">
+<meta http-equiv="pragma" content="no-cache">
 <meta http-equiv="cache-control" content="no-cache">
 <title>Login Screen for OpenSim</title>
 <link  href="loginscreen/style.css" type=text/css rel=stylesheet />
