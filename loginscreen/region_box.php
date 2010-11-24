@@ -59,8 +59,6 @@ if(!isset($_GET['regio'])){
                   <tbody>
                   <tr <?php if($w==2){$w=0; echo "bgColor=#000000";}else{echo "bgColor=#151515";}?>>
                     <td width="55%" align=left vAlign=top noWrap class=regiontext>
-                      <!--<a style="cursor:pointer" onclick="document.location.href='secondlife://<?php echo $regionName?>/128/128/50'">
-                      -->
                       <a style="cursor:pointer" onclick="document.location.href='secondlife://<?php echo $regionName?>'">
                         <font color="#cccccc"><u><?php echo $regionName?></u></font>
                       </a>
