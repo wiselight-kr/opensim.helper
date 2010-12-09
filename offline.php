@@ -28,7 +28,7 @@ if ($method == "/SaveMessage/") {
 		$start+=2;
 		$msg   = substr($msg, $start);
 		//$parts = split("[<>]", $msg);
-		$parts = preg_split("[<>]", $msg);
+		$parts = preg_split("/[<>]/", $msg);
 		$from_agent = $parts[4];
 		$to_agent   = $parts[12];
 
@@ -51,7 +51,7 @@ if ($method == "/SaveMessage/") {
 if ($method == "/RetrieveMessages/") {
 	$parms = $HTTP_RAW_POST_DATA;
 	//$parts = split("[<>]", $parms);
-	$parts = preg_split("[<>]", $parms);
+	$parts = preg_split("/[<>]/", $parms);
 	$agent_id = $parts[6];
 	$errno = -1;
 
