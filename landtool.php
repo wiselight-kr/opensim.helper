@@ -153,7 +153,7 @@ function buy_land($method_name, $params, $app_data)
 				echo $response_xml;
 				return "";
 			}
-			move_money($economy_source_account, $agentid, $amount, 0, 0, 0, 0, "Currency purchase",0,$ipAddress);
+			move_money($economy_source_account, $agentid, $amount, 0, 0, 0, 0, "Currency purchase",$ipAddress);
 		}
 		header("Content-type: text/xml");
 		
