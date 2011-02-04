@@ -100,33 +100,41 @@ function buy_land($method_name, $params, $app_data)
 {
 	$req		  = $params[0];
 	$agentid	  = $req['agentId'];
-	$landowner	  = $req['sourceId'];
 	$sessionid	  = $req['secureSessionId'];
 	$amount		  = $req['currencyBuy'];
-	$real		  = $req['estimatedCost'];
+	$cost		  = $req['estimatedCost'];
 	$billableArea = $req['billableArea'];
+    $confim		  = $req['confirm'];
 	$ipAddress	  = $_SERVER['REMOTE_ADDR'];
+     
+	//
+	if ($confim!=get_confirm_value()) {
+		$response_xml = xmlrpc_encode(array('success'     => False,
+											'errorMessage'=> "\n\nMissmatch Confirm Value!!",
+											'errorURI'    => "".SYSURL.""));
+		header("Content-type: text/xml");
+		echo $response_xml;
+		return "";
+	}
 
 	$ret = opensim_check_secure_session($agentid, null, $sessionid);
 
 	if ($ret) {
-		if($amount > 0) {
+		if($amount>=0) {
 			if(!process_transaction($agentid, $real, $ipAddress)) {
 				$response_xml = xmlrpc_encode(array(
 						'success'	   => False,
-						'errorMessage' => "The gateway has declined your transaction. Please update your payment method AND try again later.",
+						'errorMessage' => "\n\nThe gateway has declined your transaction. Please update your payment method AND try again later.",
 						'errorURI'	   => "".SYSURL.""));
 			}
-
-			move_money($agentid, $landowner, $amount, 5002, 0, "Land Purchase", 0, 0, $ipAddress);
+			move_money($agentid, null, $amount, 5002, 0, "Land Purchase", 0, 0, $ipAddress);
 			update_simulator_balance($agentid, -1, $sessionid);
-			update_simulator_balance($landowner, -1);
 
 			$response_xml = xmlrpc_encode(array('success' => True));
 		}
 		else {
 			$response_xml = xmlrpc_encode(array('success'     => False,
-												'errorMessage'=> "You do not have sufficient funds for this purchase",
+												'errorMessage'=> "\n\nYou do not have sufficient funds for this purchase",
 												'errorURI'	  => "".SYSURL.""));
 		}
 	}
@@ -150,7 +158,7 @@ function buy_land($method_name, $params, $app_data)
 #
 
 $request_xml = $HTTP_RAW_POST_DATA;
-error_log("landtool.php: ".$request_xml);
+//error_log("landtool.php: ".$request_xml);
 
 xmlrpc_server_call_method($xmlrpc_server, $request_xml, '');
 xmlrpc_server_destroy($xmlrpc_server);

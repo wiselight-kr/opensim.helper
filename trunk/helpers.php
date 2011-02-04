@@ -101,6 +101,7 @@ function update_simulator_balance($agentID, $amount=-1, $secureID=null)
 
 	if ($amount<0) {
 		$amount = get_balance($agentID, $secureID);
+error_log("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS = $amount");
 		if ($amount<0) return false;
 	}
 
@@ -157,7 +158,7 @@ function  move_money($agentID, $destID, $amount, $type, $flags, $desc, $prminven
 	global $user_server_uri;
 
 	if (!USE_CURRENCY_SERVER) {
-  		cms_set_money_transaction($agentID, $destID, $amount, $type, $flags, $desc, $prminvent, $nxtowner, $ip)
+  		cms_set_money_transaction($agentID, $destID, $amount, $type, $flags, $desc, $prminvent, $nxtowner, $ip);
 		return true;
 	}
 
@@ -187,8 +188,9 @@ function  add_money($agentID, $amount, $secureID=null)
 
 	//
 	if (!USE_CURRENCY_SERVER) {
-		cms_set_money_transaction(null, $agentID, $amount, 5010, 0, "Add Money", 0, 0, "",);
-		return true;
+		cms_set_money_transaction(null, $agentID, $amount, 5010, 0, "Add Money", 0, 0, "");
+		$res["success"] = true;
+		return $res;
 	}
 
 	//
@@ -241,7 +243,7 @@ function  get_balance($agentID, $secureID=null)
 	$serveruri = $results["serverURI"];
 
 	$results = opensim_get_avatar_session($agentID);
-	if (!$results) (integer)return $cash;
+	if (!$results) return (integer)$cash;
 	$sessionID = $results["sessionID"];
 	if ($secureID==null) $secureID = $results["secureID"];
 	
@@ -283,11 +285,14 @@ function do_call($host, $port, $uri, $request)
 	$ret = false;
 	if ($data) $ret = xmlrpc_decode($data);
 
+	// for Debug
+	/*
 	ob_start();
 	print_r($ret);
 	$rt = ob_get_contents();
 	ob_end_clean();
 	error_log("[do_call] responce = ".$rt);
+	*/
 
 	return $ret;
 }
