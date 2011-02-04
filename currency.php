@@ -215,9 +215,8 @@ function region_move_money($method_name, $params, $app_data)
 		if ($ret) {
 			$balance = get_balance($agentid, $sessionid);
 			if ($balance >= $cash) {
-				move_money($agentid, $destid, $cash,$aggregatePermInventory, $aggregatePermNextOwner,
-									 $flags, $transactiontype, $description, $ipAddress);
-
+				move_money($agentid, $destid, $cash, $transactiontype, $flags, $description, 
+										$aggregatePermInventory, $aggregatePermNextOwner, $ipAddress);
 				$sbalance = get_balance($agentid, $sessionid);
 				$dbalance = get_balance($destid);
 
@@ -226,12 +225,8 @@ function region_move_money($method_name, $params, $app_data)
 													'funds'		  	=> $balance,
 													'funds2'		=> $balance,
 													'currencySecret'=> " "));
-				header("Content-type: text/xml");
-				echo $response_xml;
-
 				update_simulator_balance($agentid, $sbalance, $sessionid);
 				update_simulator_balance($destid,  $dbalance);
-				return "";
 			}
 			else {
 				$response_xml = xmlrpc_encode(array('success'	  => False,
@@ -312,15 +307,6 @@ function claimUser_func($method_name, $params, $app_data)
 	return "";
 }
 
-
-
-function  get_confirm_value()
-{
-	$confirmvalue = cms_get_config("currency_script_key");
-	if ($confirmvalue=="") $confirmvalue = "1234567883789";
-
-	return $confirmvalue;
-}
 
 
 
