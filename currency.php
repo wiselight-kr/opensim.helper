@@ -55,7 +55,6 @@ require_once('../include/cms_interface.php');
 require_once('./helpers.php');
 
 
-
 #
 # The XMLRPC server object
 #
@@ -118,7 +117,7 @@ function buy_currency($method_name, $params, $app_data)
 	//
 	if ($confim!=get_confirm_value()) {
 		$response_xml = xmlrpc_encode(array('success'	  => False,
-											'errorMessage'=> "Missmatch Confirm Value!!",
+											'errorMessage'=> "\n\nMissmatch Confirm Value!!",
 											'errorURI'	  => "".SYSURL.""));
 		header("Content-type: text/xml");
 		echo $response_xml;
@@ -139,7 +138,7 @@ function buy_currency($method_name, $params, $app_data)
 	}
 	else {
 		$response_xml = xmlrpc_encode(array('success'	  => False,
-											'errorMessage'=> "Unable to process the transaction.  The gateway denied your charge",
+											'errorMessage'=> "\n\nUnable to process the transaction.  The gateway denied your charge",
 											'errorURI'	  => "".SYSURL.""));
 	}
 	
@@ -225,6 +224,7 @@ function region_move_money($method_name, $params, $app_data)
 													'funds'		  	=> $balance,
 													'funds2'		=> $balance,
 													'currencySecret'=> " "));
+
 				update_simulator_balance($agentid, $sbalance, $sessionid);
 				update_simulator_balance($destid,  $dbalance);
 			}
@@ -315,7 +315,7 @@ function claimUser_func($method_name, $params, $app_data)
 #
 
 $request_xml = $HTTP_RAW_POST_DATA;
-error_log("currency.php: ".$request_xml);
+//error_log("currency.php: ".$request_xml);
 
 xmlrpc_server_call_method($xmlrpc_server, $request_xml, '');
 xmlrpc_server_destroy($xmlrpc_server);
