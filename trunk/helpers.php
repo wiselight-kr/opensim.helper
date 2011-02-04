@@ -101,7 +101,6 @@ function update_simulator_balance($agentID, $amount=-1, $secureID=null)
 
 	if ($amount<0) {
 		$amount = get_balance($agentID, $secureID);
-error_log("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS = $amount");
 		if ($amount<0) return false;
 	}
 
