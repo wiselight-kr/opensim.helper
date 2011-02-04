@@ -4,14 +4,14 @@
 # 
 #  Redistribution and use in source and binary forms, with or without
 #  modification, are permitted provided that the following conditions are met:
-#      * Redistributions of source code must retain the above copyright
-#        notice, this list of conditions and the following disclaimer.
-#      * Redistributions in binary form must reproduce the above copyright
-#        notice, this list of conditions and the following disclaimer in the
-#        documentation and/or other materials provided with the distribution.
-#      * Neither the name of the OpenSim Project nor the
-#        names of its contributors may be used to endorse or promote products
-#        derived FROM this software without specific prior written permission.
+#	  * Redistributions of source code must retain the above copyright
+#		notice, this list of conditions and the following disclaimer.
+#	  * Redistributions in binary form must reproduce the above copyright
+#		notice, this list of conditions and the following disclaimer in the
+#		documentation and/or other materials provided with the distribution.
+#	  * Neither the name of the OpenSim Project nor the
+#		names of its contributors may be used to endorse or promote products
+#		derived FROM this software without specific prior written permission.
 # 
 #  THIS SOFTWARE IS PROVIDED BY THE DEVELOPERS ``AS IS'' AND ANY
 #  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -39,7 +39,7 @@
 # User provided interface routine to interface with payment processor
 #
 
-function process_transaction($avatarId, $amount, $ipAddress)
+function process_transaction($avatarID, $cost, $ipAddress)
 {
 	# Do Credit Card Processing here!  Return False if it fails!
 	# Remember, $amount is stored without decimal places, however it's assumed
@@ -47,13 +47,12 @@ function process_transaction($avatarId, $amount, $ipAddress)
 	# 5 dollars will be 500
 	# 15 dollars will be 1500
 
-	//$banker_avatar = cms_get_config("banker_avatar");
-
-	//if ($avatarId==$banker_vatar) return true;
-
+	//if ($avatarID==CURRENCY_BANKER) return true;
 	//return false;
+
 	return true;
 }
+
 
 ###################### No user serviceable parts below #####################
 
@@ -61,8 +60,9 @@ function process_transaction($avatarId, $amount, $ipAddress)
 # Helper routines
 #
 
-function convert_to_real($currency)
+function convert_to_real($amount)
 {
+	/*
 	if($currency == 0) return 0;
 
 	$db = new DB(CURRENCY_DB_HOST, CURRENCY_DB_NAME, CURRENCY_DB_USER, CURRENCY_DB_PASS);
@@ -86,230 +86,211 @@ function convert_to_real($currency)
 	$real = (integer)ceil($real);		
 
 	return $real;
+	*/
+
+	$cost = $amount;
+
+	return $cost;
 }
 
 
 
-function update_simulator_balance($agentId)
+function update_simulator_balance($agentID, $amount=-1, $secureID=null)
 {
-	$db = new DB(OPENSIM_DB_HOST, OPENSIM_DB_NAME, OPENSIM_DB_USER, OPENSIM_DB_PASS);
+	if (!isGUID($agnetID)) return false;
 
-	if ($db->exist_table("GridUser")) {
-		$sql = "SELECT serverIP,serverHttpPort,serverURI FROM GridUser".
-				" INNER JOIN regions ON regions.uuid=GridUser.LastRegionID WHERE GridUser.UserID='".$db->escape($agentId)."'";
+	if ($amount<0) {
+		$amount = get_balance($agentID, $secureID);
+		if ($amount<0) return false;
 	}
-	else {
-		$sql = "SELECT serverIP,serverHttpPort,serverURI FROM agents".
-				" INNER JOIN regions ON regions.uuid=agents.currentRegion WHERE agents.UUID='".$db->escape($agentId)."'";
-	}
-	$db->query($sql);
-	$results = $db->next_record();
-	$db->close();
 
-	if ($results) {
-		$serverip  = $results["serverIP"];
-		$httpport  = $results["serverHttpPort"];
-		$serveruri = $results["serverURI"];
+	// XML RPC to Region Server
+	if (!isGUID($secureID, true)) return false;
+
+	$results = opensim_get_server_info($agentID);
+	if (!$results) return false;
+	$serverip  = $results["serverIP"];
+	$httpport  = $results["serverHttpPort"];
+	$serveruri = $results["serverURI"];
+
+	$results = opensim_get_avatar_session($agentID);
+	if (!$results) return false;
+	$sessionID = $results["sessionID"];
+	if ($secureID==null) $secureID = $results["secureID"];
+
+	$req	  = array('clientUUID'=>$agentID, 'clientSessionID'=>$sessionID, 'clientSecureSessionID'=>$secureID, "Balance"=>$amount);
+	$params   = array($req);
+	$request  = xmlrpc_encode_request('UpdateBalance', $params);
+	$response = do_call($serverip, $httpport, $serveruri, $request); 
+
+	return $response;
+}
+
+
+
+function user_alert($agentID, $message, $secureID=null)
+{
+	$results = opensim_get_server_info($agentID);
+	if (!$results) return false;
+	$serverip  = $results["serverIP"];
+	$httpport  = $results["serverHttpPort"];
+	$serveruri = $results["serverURI"];
 	
-		$req      = array('agentId' => $agentId);
-		$params   = array($req);
+	$results = opensim_get_avatar_session($agentID);
+	if (!$results) return false;
+	$sessionID = $results["sessionID"];
+	if ($secureID==null) $secureID = $results["secureID"];
 
-		$request  = xmlrpc_encode_request('balanceUpdateRequest', $params);
-		$response = do_call($serverip, $httpport, $serveruri, $request); 
-	}
+	$req 	  = array('clientID'=>$agentID, 'clientSessionID'=>$sessionID, 'clientSecureSessionID'=>$secureID, 'Description'=>$message); 
+	$params   = array($req);
+	$request  = xmlrpc_encode_request('UserAlert', $params);
+	$response = do_call($serverip, $httpport, $serveruti, $request);
+
+	return $response;
 }
 
 
 
-function user_alert($agentId, $soundId, $text)
+//
+function  move_money($agentID, $destID, $amount)
 {
-	$db = new DB(OPENSIM_DB_HOST, OPENSIM_DB_NAME, OPENSIM_DB_USER, OPENSIM_DB_PASS);
+	global $user_server_uri;
 
-	if ($db->exist_table("GridUser")) {
-    	$sql = "SELECT serverIP,serverHttpPort,serverURI,regionSecret FROM GridUser".
-				" INNER JOIN regions ON regions.uuid=GridUser.LastRegionID WHERE GridUser.UserID='".$db->escape($agentId)."'";
+	if (!USE_CURRENCY_SERVER) {
+		cms_set_money_transaction($agentID, $destID, $amount, 0, 0, 5011, $type, "Move Money", "");
+		return true;
 	}
-	else {
-    	$sql = "SELECT serverIP,serverHttpPort,serverURI,regionSecret FROM agents".
-				" INNRT JOIN regions ON regions.uuid=agents.currentRegion WHERE agents.UUID='".$db->escape($agentId)."'";
-	}
-    $db->query($sql);
-    $results = $db->next_record();
-	$db->close();
 
-    if ($results) {
-        $serverip  = $results["serverIP"];
-        $httpport  = $results["serverHttpPort"];
-		$serveruri = $results["serverURI"];
-		$secret    = $results["regionSecret"];
-        
-        $req = array('agentId'=>$agentId, 'soundID'=>$soundId, 'text'=>$text, 'secret'=>$secret);
-        $params = array($req);
+	$url = preg_split("/[:\/]/", $user_server_uri);
+	$userip = $url[3];
 
-        $request = xmlrpc_encode_request('userAlert', $params);
-        $response = do_call($serverip, $httpport, $serveruti, $request);
-    }
-}
-
-
-
-function move_money($sourceId, $destId, $amount, 
-			$aggregatePermInventory, $aggregatePermNextOwner, $flags, $transactionType, 
-			$description, $regionGenerated, $ipGenerated)
-{
-	$db = new DB(OPENSIM_DB_HOST, OPENSIM_DB_NAME, OPENSIM_DB_USER, OPENSIM_DB_PASS);
-
-	# SELECT current region
-	if ($db->exist_table("GridUser")) {
-		$sql = "SELECT LastRegionID FROM GridUser WHERE UserID='".$db->escape($sourceId)."'";
-	}
-	else {
-		$sql = "SELECT currentRegion FROM agents WHERE UUID='".$db->escape($sourceId)."'";
-	}
-    $db->query($sql);
-
-    $results = $db->next_record();
-    if ($results) $currentRegion = $results["currentRegion"];
-	$db->close();
-
-	// CURRENCY
-	$db = new DB(CURRENCY_DB_HOST, CURRENCY_DB_NAME, CURRENCY_DB_USER, CURRENCY_DB_PASS);
-
-	# Add Cash to one account
-	$sql = "INSERT INTO ".CURRENCY_TRANSACTION_TBL." (sourceId,destId,amount,flags,".
-			"aggregatePermInventory,aggregatePermNextOwner,transactionType,".
-			"description,timeOccurred,RegionGenerated,ipGenerated) ".
-			"VALUES ('".
-				$db->escape($sourceId)."','".
-				$db->escape($destId)."',".
-				$db->escape($amount).",".
-				$db->escape($aggregatePermInventory).",".
-				$db->escape($aggregatePermNextOwner).",".
-				$db->escape($flags).",".
-				$db->escape($transactionType).",'".
-				$db->escape($description)."',".
-				time().",'".
-				$db->escape($currentRegion)."','".
-				$db->escape($ipGenerated)."')";
-	$db->query($sql);
-
-	# Remove Cash FROM the other account
+	// Direct DB access for security
+ 	opensim_set_currency_transaction($agentID, $destID, $amount, 0, 5011, "Move Money", $userip);
 	
-	$sql = "INSERT INTO ".CURRENCY_TRANSACTION_TBL." (sourceId,destId,amount,flags,".
-			"aggregatePermInventory,aggregatePermNextOwner,transactionType,".
-			"description,timeOccurred,RegionGenerated,ipGenerated) ".
-			"VALUES ('".
-				$db->escape($destId)."','".
-				$db->escape($sourceId)."',".
-				$db->escape(-$amount).",".
-				$db->escape($aggregatePermInventory).",".
-				$db->escape($aggregatePermNextOwner).",".
-				$db->escape($flags).",".
-				$db->escape($transactionType).",'".
-				$db->escape($description)."',".
-				time().",'".
-				$db->escape($currentRegion)."','".
-				$db->escape($ipGenerated)."')";
-	$db->query($sql);
-	$db->close();
+	if (isGUID($agentID) and $angentID!="00000000-0000-0000-0000-0000000000000") {
+		opensim_set_currency_balance($agentID, $userip, -$amount);
+	}
+
+	if (isGUID($destID)  and $destID!="00000000-0000-0000-0000-0000000000000") {
+		opensim_set_currency_balance($destID,  $userip,  $amount);
+	}
+
+	return true;
 }
 
 
 
-
-function add_money($destId, $amount, 
-		$aggregatePermInventory, $aggregatePermNextOwner, $flags, $transactionType, 
-		$description, $regionGenerated, $ipGenerated)
+//
+function  add_money($agentID, $amount, $secureID=null) 
 {
-	$sourceId = "00000000-0000-0000-0000-000000000000";
-	$db = new DB(CURRENCY_DB_HOST, CURRENCY_DB_NAME, CURRENCY_DB_USER, CURRENCY_DB_PASS);
+	if (!isGUID($agentID)) return false;
 
-	# Add Cash to one account
-	$sql = "INSERT INTO ".CURRENCY_TRANSACTION_TBL." (sourceId,destId,amount,flags,".
-			"aggregatePermInventory,aggregatePermNextOwner,transactionType,".
-			"description,timeOccurred,RegionGenerated,ipGenerated) ".
-			"VALUES ('".
-				$db->escape($sourceId)."','".
-				$db->escape($destId)."',".
-				$db->escape($amount).",".
-				$db->escape($aggregatePermInventory).",".
-				$db->escape($aggregatePermNextOwner).",".
-				$db->escape($flags).",".
-				$db->escape($transactionType).",'".
-				$db->escape($description)."',".
-				time().",'".
-				"','".
-				$db->escape($ipGenerated)."')";
-	$db->query($sql);
-	$db->close();
+	//
+	if (!USE_CURRENCY_SERVER) {
+		cms_set_money_transaction(null, $agentID, $amount, 0, 0, 0, 5010, "Add Money", "");
+		return true;
+	}
+
+	//
+	// XML RPC to Region Server
+	//
+	if (!isGUID($secureID, true)) return false;
+
+	$results = opensim_get_server_info($agentID);
+	if (!$results) return false;
+	$serverip  = $results["serverIP"];
+	$httpport  = $results["serverHttpPort"];
+	$serveruri = $results["serverURI"];
+
+	$results = opensim_get_avatar_session($agentID);
+	if (!$results) return false;
+	$sessionID = $results["sessionID"];
+	if ($secureID==null) $secureID = $results["secureID"];
+	
+	$req	  = array('bankerID'=>$agentID, 'bankerSessionID'=>$sessionID, 'bankerSecureSessionID'=>$secureID, 'amount'=>$amount);
+	$params   = array($req);
+	$request  = xmlrpc_encode_request('AddBankerMoney', $params);
+	$response = do_call($serverip, $httpport, $serveruri, $request);
+
+	return $response;
 }
 
 
 
-
-function get_balance($avatarId)
+//
+function  get_balance($agentID, $secureID=null)
 {
-	$db = new DB(CURRENCY_DB_HOST, CURRENCY_DB_NAME, CURRENCY_DB_USER, CURRENCY_DB_PASS);
+	$cash = -1;
+	if (!isGUID($agentID)) return (integer)$cash;
 
-    $cash = 0;
-    $sql = "SELECT SUM(amount) FROM ".CURRENCY_TRANSACTION_TBL." WHERE destId='".$db->escape($avatarId)."'";
-	$db->query($sql);
+	//
+	if (!USE_CURRENCY_SERVER) {
+		$cash = cms_get_money_balance($agentID);
+		return (integer)$cash;
+	}
 
-    list($cash) = $db->next_record();
+	//
+	// XML RPC to Region Server
+	//
+	if (!isGUID($secureID, true)) return (integer)$cash;
 
-	$db -> close();
-    return (integer)$cash;
+	$results = opensim_get_server_info($agentID);
+	if (!$results) return (integer)$cash;
+	$serverip  = $results["serverIP"];
+	$httpport  = $results["serverHttpPort"];
+	$serveruri = $results["serverURI"];
+
+	$results = opensim_get_avatar_session($agentID);
+	if (!$results) (integer)return $cash;
+	$sessionID = $results["sessionID"];
+	if ($secureID==null) $secureID = $results["secureID"];
+	
+	$req	  = array('clientID'=>$agentID, 'clientSessionID'=>$sessionID, 'clientSecureSessionID'=>$secureID);
+	$params   = array($req);
+	$request  = xmlrpc_encode_request('GetBalance', $params);
+	$response = do_call($serverip, $httpport, $serveruri, $request);
+
+	if ($response) $cash = $response["balance"];
+	return (integer)$cash;
 }
 
 
 
+// XML RPC
 function do_call($host, $port, $uri, $request)
 {
 	$url = "";
 	if ($uri!="") {
-    	$dec = explode(":", $uri);
-    	if (!strncasecmp($dec[0], "http", 4)) $url = "$dec[0]:$dec[1]";
+		$dec = explode(":", $uri);
+		if (!strncasecmp($dec[0], "http", 4)) $url = "$dec[0]:$dec[1]";
 	}   
 	if ($url=="") $url ="http://$host";
 	$url = "$url:$port/";
 
-    $header[] = "Content-type: text/xml";
-    $header[] = "Content-length: ".strlen($request);
-    
-    $ch = curl_init();   
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 1);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $request);
-    
-    $data = curl_exec($ch);       
-    if (!curl_errno($ch)) {
-        curl_close($ch);
-        return $data;
-    }
+	$header[] = "Content-type: text/xml";
+	$header[] = "Content-length: ".strlen($request);
+	
+	$ch = curl_init();   
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($ch, CURLOPT_TIMEOUT, 1);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $request);
+
+	$data = curl_exec($ch);	   
+	if (!curl_errno($ch)) curl_close($ch);
+
+	$ret = false;
+	if ($data) $ret = xmlrpc_decode($data);
+
+	ob_start();
+	print_r($ret);
+	$rt = ob_get_contents();
+	ob_end_clean();
+	error_log("[do_call] responce = ".$rt);
+
+	return $ret;
 }
 
 
-
-function agent_name($agentId)
-{
-	$db = new DB(OPENSIM_DB_HOST, OPENSIM_DB_NAME, OPENSIM_DB_USER, OPENSIM_DB_PASS);
-
-	if ($db->exist_table("UserAccounts")){
-		$sql = "SELECT FirstName,LastName FROM UserAccounts WHERE PrincipalID='".$agentId."'";
-	}
-	else {
-		$sql = "SELECT username, lastname FROM users WHERE UUID='".$agentId."'";
-	}
-	$db->query($sql);
-
-	$record = $db->next_record();
-	$db->close();
-	if(!$record) return "";
-
-	$name = implode(" ", array($record[0], $record[1]));
-
-	return $name;
-}
 ?>

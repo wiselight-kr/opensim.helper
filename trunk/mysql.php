@@ -268,6 +268,22 @@ class DB
 
 
 
+	//
+	// Lock
+	//
+	function lock_table($table, $mode='write')
+	{
+		$this->query("LOCK TABLES ".$table." ".$mode);
+	}
+
+
+
+	function unlock_table()
+	{
+		$this->query("UNLOCK TABLES");
+	}
+
+
 
 	//
 	// Timeout
