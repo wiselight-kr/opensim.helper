@@ -51,7 +51,7 @@
 #¡¡Modified by Fumi.Iseki for XoopenSim/Modlos
 #
 
-require_once('../include/cms_interface.php');
+require_once('../include/env_interface.php');
 require_once('./helpers.php');
 
 

@@ -157,7 +157,7 @@ function  move_money($agentID, $destID, $amount, $type, $flags, $desc, $prminven
 	global $user_server_uri;
 
 	if (!USE_CURRENCY_SERVER) {
-  		cms_set_money_transaction($agentID, $destID, $amount, $type, $flags, $desc, $prminvent, $nxtowner, $ip);
+  		env_set_money_transaction($agentID, $destID, $amount, $type, $flags, $desc, $prminvent, $nxtowner, $ip);
 		return true;
 	}
 
@@ -187,7 +187,7 @@ function  add_money($agentID, $amount, $secureID=null)
 
 	//
 	if (!USE_CURRENCY_SERVER) {
-		cms_set_money_transaction(null, $agentID, $amount, 5010, 0, "Add Money", 0, 0, "");
+		env_set_money_transaction(null, $agentID, $amount, 5010, 0, "Add Money", 0, 0, "");
 		$res["success"] = true;
 		return $res;
 	}
@@ -226,7 +226,7 @@ function  get_balance($agentID, $secureID=null)
 
 	//
 	if (!USE_CURRENCY_SERVER) {
-		$cash = cms_get_money_balance($agentID);
+		$cash = env_get_money_balance($agentID);
 		return (integer)$cash;
 	}
 
@@ -300,7 +300,7 @@ function do_call($host, $port, $uri, $request)
 
 function  get_confirm_value()
 {
-	$confirmvalue = cms_get_config("currency_script_key");
+	$confirmvalue = env_get_config("currency_script_key");
 	if ($confirmvalue=="") $confirmvalue = "1234567883789";
 
 	return $confirmvalue;
