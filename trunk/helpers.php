@@ -152,26 +152,26 @@ function user_alert($agentID, $message, $secureID=null)
 
 
 //
-function  move_money($agentID, $destID, $amount)
+function  move_money($agentID, $destID, $amount, $type, $flags, $desc, $prminvent=0, $nxtowner=0, $ip="")
 {
 	global $user_server_uri;
 
 	if (!USE_CURRENCY_SERVER) {
-		cms_set_money_transaction($agentID, $destID, $amount, 0, 0, 5011, $type, "Move Money", "");
+  		cms_set_money_transaction($agentID, $destID, $amount, $type, $flags, $desc, $prminvent, $nxtowner, $ip)
 		return true;
 	}
 
-	$url = preg_split("/[:\/]/", $user_server_uri);
-	$userip = $url[3];
 
 	// Direct DB access for security
- 	opensim_set_currency_transaction($agentID, $destID, $amount, 0, 5011, "Move Money", $userip);
+	$url = preg_split("/[:\/]/", $user_server_uri);
+	$userip = $url[3];
+ 	opensim_set_currency_transaction($agentID, $destID, $amount, $type, $flags, $desc, $userip);
 	
 	if (isGUID($agentID) and $angentID!="00000000-0000-0000-0000-0000000000000") {
 		opensim_set_currency_balance($agentID, $userip, -$amount);
 	}
 
-	if (isGUID($destID)  and $destID!="00000000-0000-0000-0000-0000000000000") {
+	if (isGUID($destID)  and $destID  !="00000000-0000-0000-0000-0000000000000") {
 		opensim_set_currency_balance($destID,  $userip,  $amount);
 	}
 
@@ -187,7 +187,7 @@ function  add_money($agentID, $amount, $secureID=null)
 
 	//
 	if (!USE_CURRENCY_SERVER) {
-		cms_set_money_transaction(null, $agentID, $amount, 0, 0, 0, 5010, "Add Money", "");
+		cms_set_money_transaction(null, $agentID, $amount, 5010, 0, "Add Money", 0, 0, "",);
 		return true;
 	}
 
@@ -292,5 +292,14 @@ function do_call($host, $port, $uri, $request)
 	return $ret;
 }
 
+
+
+function  get_confirm_value()
+{
+	$confirmvalue = cms_get_config("currency_script_key");
+	if ($confirmvalue=="") $confirmvalue = "1234567883789";
+
+	return $confirmvalue;
+}
 
 ?>
