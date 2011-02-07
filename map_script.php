@@ -5,11 +5,11 @@
 //													by Fumi.Iseki
 //
 //
-// $size, $centerX, $centerY, $world_map_url, CMS_MODULE_PATH are needed
+// $size, $centerX, $centerY, $world_map_url, ENV_HELPER_PATH are needed
 //
 
 //
-require_once(CMS_MODULE_PATH.'/include/opensim.mysql.php');
+require_once(ENV_HELPER_PATH.'/../include/opensim.mysql.php');
 
 
 

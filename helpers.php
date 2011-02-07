@@ -154,8 +154,6 @@ function user_alert($agentID, $message, $secureID=null)
 //
 function  move_money($agentID, $destID, $amount, $type, $flags, $desc, $prminvent=0, $nxtowner=0, $ip="")
 {
-	global $user_server_uri;
-
 	if (!USE_CURRENCY_SERVER) {
   		env_set_money_transaction($agentID, $destID, $amount, $type, $flags, $desc, $prminvent, $nxtowner, $ip);
 		return true;
@@ -163,7 +161,7 @@ function  move_money($agentID, $destID, $amount, $type, $flags, $desc, $prminven
 
 
 	// Direct DB access for security
-	$url = preg_split("/[:\/]/", $user_server_uri);
+	$url = preg_split("/[:\/]/", USER_SERVER_URI);
 	$userip = $url[3];
  	opensim_set_currency_transaction($agentID, $destID, $amount, $type, $flags, $desc, $userip);
 	
