@@ -75,11 +75,12 @@ function get_currency_quote($method_name, $params, $app_data)
 	$agentid   = $req['agentId'];
 	$sessionid = $req['secureSessionId'];
 	$amount	   = $req['currencyBuy'];
+	$ipAddress = $_SERVER['REMOTE_ADDR'];
 
 	$ret = opensim_check_secure_session($agentid, null, $sessionid);
 
 	if ($ret) {
-		$confirmvalue = get_confirm_value();
+		$confirmvalue = get_confirm_value($ipAddress);
 		$cost = convert_to_real($amount);
 		$currency = array('estimatedCost'=> $cost, 'currencyBuy'=> $amount);
 		$response_xml = xmlrpc_encode(array('success'	=> True, 
@@ -115,9 +116,19 @@ function buy_currency($method_name, $params, $app_data)
 	$ipAddress = $_SERVER['REMOTE_ADDR'];
 
 	//
-	if ($confim!=get_confirm_value()) {
+	if ($confim!=get_confirm_value($ipAddress)) {
 		$response_xml = xmlrpc_encode(array('success'	  => False,
 											'errorMessage'=> "\n\nMissmatch Confirm Value!!",
+											'errorURI'	  => "".SYSURL.""));
+		header("Content-type: text/xml");
+		echo $response_xml;
+		return "";
+	}
+
+	$checkSecure = opensim_check_secure_session($agentid, null, $sessionid);
+	if (!$checkSecure) {
+		$response_xml = xmlrpc_encode(array('success'	  => False,
+											'errorMessage'=> "\n\nMissmatch Secure Session ID!!",
 											'errorURI'	  => "".SYSURL.""));
 		header("Content-type: text/xml");
 		echo $response_xml;
