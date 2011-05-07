@@ -218,7 +218,7 @@ function  add_money($agentID, $amount, $secureID=null)
 
 //
 // Send the money to avatar for bonus 
-// 								by millo (Sylvie)
+// 										by Milo
 //
 function send_money($agentID, $amount, $secretCode=null)
 {
@@ -248,7 +248,7 @@ function send_money($agentID, $amount, $secretCode=null)
 
 	$req 	  = array('avatarID'=>$agentID, 'secretCode'=>$secretCode, 'amount'=>$amount);
 	$params   = array($req);
-	$request  = xmlrpc_encode_request('SendMoney', $params);
+	$request  = xmlrpc_encode_request('SendMoneyBalance', $params);
 	$response = do_call($serverip, $httpport, $serveruri, $request);
 
 	return $response;
@@ -313,7 +313,7 @@ function do_call($host, $port, $uri, $request)
 	$ch = curl_init();   
 	curl_setopt($ch, CURLOPT_URL, $url);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-	curl_setopt($ch, CURLOPT_TIMEOUT, 1);
+	curl_setopt($ch, CURLOPT_TIMEOUT, 3);
 	curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $request);
 
