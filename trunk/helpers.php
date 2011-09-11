@@ -141,7 +141,7 @@ function user_alert($agentID, $message, $secureID=null)
 	$sessionID = $results["sessionID"];
 	if ($secureID==null) $secureID = $results["secureID"];
 
-	$req 	  = array('clientID'=>$agentID, 'clientSessionID'=>$sessionID, 'clientSecureSessionID'=>$secureID, 'Description'=>$message); 
+	$req 	  = array('clientUUID'=>$agentID, 'clientSessionID'=>$sessionID, 'clientSecureSessionID'=>$secureID, 'Description'=>$message); 
 	$params   = array($req);
 	$request  = xmlrpc_encode_request('UserAlert', $params);
 	$response = do_call($serverip, $httpport, $serveruti, $request);
