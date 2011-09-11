@@ -206,7 +206,7 @@ function  add_money($agentID, $amount, $secureID=null)
 	//if ($sessionID=="")  return false;
 	if ($secureID==null) $secureID = $results["secureID"];
 	
-	$req	  = array('bankerID'=>$agentID, 'bankerSessionID'=>$sessionID, 'bankerSecureSessionID'=>$secureID, 'amount'=>$amount);
+	$req	  = array('clientUUID'=>$agentID, 'clientSessionID'=>$sessionID, 'clientSecureSessionID'=>$secureID, 'amount'=>$amount);
 	$params   = array($req);
 	$request  = xmlrpc_encode_request('AddBankerMoney', $params);
 
@@ -248,7 +248,7 @@ function send_money($agentID, $amount, $secretCode=null)
 		$secretCode = get_confirm_value($serverip);
 	}
 
-	$req 	  = array('avatarID'=>$agentID, 'secretCode'=>$secretCode, 'amount'=>$amount);
+	$req 	  = array('agentUUID'=>$agentID, 'secretAccessCode'=>$secretCode, 'amount'=>$amount);
 	$params   = array($req);
 	$request  = xmlrpc_encode_request('SendMoneyBalance', $params);
 	$response = do_call($serverip, $httpport, $serveruri, $request);
@@ -286,7 +286,7 @@ function  get_balance($agentID, $secureID=null)
 	if ($sessionID=="")  return (integer)$cash;
 	if ($secureID==null) $secureID = $results["secureID"];
 	
-	$req	  = array('clientID'=>$agentID, 'clientSessionID'=>$sessionID, 'clientSecureSessionID'=>$secureID);
+	$req	  = array('clientUUID'=>$agentID, 'clientSessionID'=>$sessionID, 'clientSecureSessionID'=>$secureID);
 	$params   = array($req);
 	$request  = xmlrpc_encode_request('GetBalance', $params);
 	$response = do_call($serverip, $httpport, $serveruri, $request);
