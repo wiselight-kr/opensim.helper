@@ -44,9 +44,9 @@ class DB
 
 	function halt($msg)
 	{
-		echo "</td></tr></table><b>Database error:</b> $msg<br />\n";
-		echo "<b>MySQL error</b>: $this->Errno ($this->Error)<br />\n";
-		die('Session halted.');
+		echo "<b>DB ERROR   :</b> $msg<br />\n";
+		echo "<b>MySQL ERROR:</b> $this->Error ($this->Errno)<br />\n";
+		die('Session Halted.');
 	}
 
 
