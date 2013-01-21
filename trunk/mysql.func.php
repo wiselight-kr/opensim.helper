@@ -1,19 +1,4 @@
 <?php
-/*
- * Copyright (c) 2007, 2008 Contributors, http://opensimulator.org/
- * See CONTRIBUTORS for a full list of copyright holders.
- *
- * See LICENSE for the full licensing terms of this file.
- *
-*/
-
-//This looks like its lifted from http://www.weberdev.com/get_example-4372.html  
-//I'd contact the original developer for licensing info, but his website is broken.
-
-//
-// Modified by Fumi.Iseki for CMS/LMS '10 3/29 - '10 6/8
-//
-
 
 
 class DB
