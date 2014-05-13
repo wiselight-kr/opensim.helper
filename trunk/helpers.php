@@ -65,7 +65,7 @@ function convert_to_real($amount)
 	/*
 	if($currency == 0) return 0;
 
-	$db = new DB(CURRENCY_DB_HOST, CURRENCY_DB_NAME, CURRENCY_DB_USER, CURRENCY_DB_PASS);
+	$db = new DB(CURRENCY_DB_HOST, CURRENCY_DB_NAME, CURRENCY_DB_USER, CURRENCY_DB_PASS, CURRENCY_DB_MYSQLI);
 
 	# Get the currency conversion ratio in USD Cents per Money Unit
 	# Actually, it's whatever currency your credit card processor uses
