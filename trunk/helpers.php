@@ -161,16 +161,16 @@ function  move_money($agentID, $destID, $amount, $type, $flags, $desc, $prminven
 
 
 	// Direct DB access for security
-	$url = preg_split("/[:\/]/", USER_SERVER_URI);
-	$userip = $url[3];
- 	opensim_set_currency_transaction($agentID, $destID, $amount, $type, $flags, $desc, $userip);
+	//$url = preg_split("/[:\/]/", USER_SERVER_URI);
+	//$userip = $url[3];
+ 	opensim_set_currency_transaction($agentID, $destID, $amount, $type, $flags, $desc);
 	
 	if (isGUID($agentID) and $angentID!="00000000-0000-0000-0000-0000000000000") {
-		opensim_set_currency_balance($agentID, $userip, -$amount);
+		opensim_set_currency_balance($agentID, -$amount);
 	}
 
 	if (isGUID($destID)  and $destID  !="00000000-0000-0000-0000-0000000000000") {
-		opensim_set_currency_balance($destID,  $userip,  $amount);
+		opensim_set_currency_balance($destID, $amount);
 	}
 
 	return true;
