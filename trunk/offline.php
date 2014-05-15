@@ -33,7 +33,11 @@ if ($method == "/SaveMessage/") {
 		$to_agent   = $parts[12];
 
 		if (isGUID($from_agent) and isGUID($to_agent)) {
-			$query_str = "INSERT INTO ".OFFLINE_MESSAGE_TBL." (to_uuid,from_uuid,message) VALUES ('".$to_agent."','".$from_agent."','".mysql_escape_string($msg)."')";
+
+			if (OFFLINE_DB_MYSQLI) $esc_msg = mysqli_real_escape_string($msg);
+			else				   $esc_msg = mysql_escape_string($msg);
+
+			$query_str = "INSERT INTO ".OFFLINE_MESSAGE_TBL." (to_uuid,from_uuid,message) VALUES ('".$to_agent."','".$from_agent."','".$esc_msg."')";
 			$DbLink->query($query_str);
 
 			if ($DbLink->Errno==0) {
