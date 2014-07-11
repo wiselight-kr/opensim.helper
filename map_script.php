@@ -47,7 +47,7 @@ function loadmap() {
 
 	while($DbLink->Errno==0 and list($uuid, $regionName, $serverIP, $serverURI, $locX, $locY, $serverHttpPort)=$DbLink->next_record())
 	{
-		$name = opensim_get_estate_owner($uuid);
+		$name = opensim_get_estate_info($uuid);
 		$firstN = $name['firstname'];
 		$lastN  = $name['lastname'];
 
