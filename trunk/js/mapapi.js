@@ -1347,6 +1347,7 @@ function MAP_JS($0h,$0i,$0j,$0k,$0l){
 			Object.extend(this,$2L);
 		};
 		
+		// MapWindow() 本体
 		function $09($2L){
 			this.windowClass='GENERAL';
 			this.alwaysOnTop=false;
@@ -1357,8 +1358,8 @@ function MAP_JS($0h,$0i,$0j,$0k,$0l){
 			this.closeOnClick=false;
 			this.allowGoThere=false;
 			this.doNothing=false;
-			this.width=252;
-			this.height=236;
+			this.width=280;
+			this.height=140;
 			this.padding=10;
 			Object.extend(this,$2L);
 		};
