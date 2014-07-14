@@ -1,7 +1,7 @@
 <?php
 /////////////////////////////////////////////////////////////////////////////////
 //
-// Modified From OpenSim WebInterface Redux v0.28 
+// Modified from OpenSim WebInterface Redux v0.28 
 //													by Fumi.Iseki
 //
 //
@@ -9,15 +9,16 @@
 //
 
 //
+require_once(ENV_HELPER_PATH.'/../include/env_interface.php');
 require_once(ENV_HELPER_PATH.'/../include/opensim.mysql.php');
 require_once(ENV_HELPER_PATH.'/../include/modlos.func.php');
 
 //
 $course_id = optional_param('course', '1', PARAM_INT);
-$hasPermit = hasModlosPermit($course_id);
+//$hasPermit = hasModlosPermit($course_id);
 
+//
 $display_marker = 'dr';	// infomation marker
-
 
 if ($size==16){
 	$minuszoom = 0;   $pluszoom = 32;  $infosize = 8;
@@ -40,16 +41,17 @@ else if ($size==512) {
 
 ?>
 
+function regionwin(uuid) {
+	window.open("<?php echo CMS_MODULE_URL.'/helper/sim.php?course='.$course_id.'&region='?>"+uuid, null,
+					'toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=no,copyhistory=no,width=800,height=450');
+}
+
+
 function loadmap() {
 	mapInstance = new ZoomSize(<?php echo $size?>);
 	mapInstance = new WORLDMap(document.getElementById('map-container'), {hasZoomControls: false, hasPanningControls: true});
 	mapInstance.centerAndZoomAtWORLDCoord(new XYPoint(<?php echo $centerX?>, <?php echo $centerY?>), 1);
 <?php
-	//$DbLink = opensim_new_db();
-	//$DbLink->query('SELECT uuid,regionName,serverIP,serverURI,locX,locY,serverHttpPort FROM regions ORDER BY locX');
-
-	//while($DbLink->Errno==0 and list($uuid, $regionName, $serverIP, $serverURI, $locX, $locY, $serverHttpPort)=$DbLink->next_record())
-
 	$infos = opensim_get_regions_infos();
 	foreach($infos as $info) 
 	{
@@ -57,13 +59,9 @@ function loadmap() {
 		$serverURI  = $info['serverURI'];
 		$serverIP   = $info['serverIP'];
 		$serverPort = $info['serverPort'];
-		$locX = $info['locX'];
-		$locY = $info['locY'];
-		$uuid = $info['UUID'];
-
-		//$name = opensim_get_estate_info($uuid);
-		//$firstN = $name['firstname'];
-		//$lastN  = $name['lastname'];
+		$locX 		= $info['locX'];
+		$locY 		= $info['locY'];
+		$uuid 		= $info['UUID'];
 
 		$dx = 0.00; $dy = 0.00;
 		if ($display_marker=='tl') {
@@ -95,14 +93,13 @@ function loadmap() {
 		$server = $server.':'.$serverPort;
 
 		//
-		$uuid = str_replace('-', '', $uuid);
 	  	$imageURL = $server.'/index.php?method=regionImage'.$uuid;
 
-		$windowHTML = 'Name: <b>'.$regionName.'</b><br /><br />';
-		if ($hasPermit) {
-			//$windowHTML.= 'UUID: <b>'.$uuid.'</b><br /><br />';
+		$windowHTML = 'Name: <a style=\"cursor:pointer\" onClick=\"regionwin(\''.$uuid.'\')\"><b><u>'.$regionName.'</u></b></a><br /><br />';
+		/*if ($hasPermit) {
+			$windowHTML.= 'UUID: <b>'.$uuid.'</b><br /><br />';
 			$windowHTML.= 'IP address: <b>'.$serverIP.'</b><br /><br />';
-		}
+		}*/
 		$windowHTML.= 'Coordinates: <b>'. $locX.', '.$locY.'</b><br /><br />';
 		$windowHTML.= 'Estate Name : <b>'.$info['estate_name'].'</b><br /><br />';
 		$windowHTML.= 'Estate Owner: <b>'.$info['est_fullname'].'</b><br />';
@@ -122,7 +119,6 @@ function loadmap() {
 		mapInstance.addMarker(marker, mapWindow);
 <?php
 	}
-	//$DbLink->close();
 ?>
 }
 
