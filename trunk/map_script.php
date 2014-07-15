@@ -93,7 +93,8 @@ function loadmap() {
 		$server = $server.':'.$serverPort;
 
 		//
-	  	$imageURL = $server.'/index.php?method=regionImage'.$uuid;
+		$imageuuid = str_replace('-', '', $uuid);
+	  	$imageURL = $server.'/index.php?method=regionImage'.$imageuuid;
 
 		$windowHTML = 'Name: <a style=\"cursor:pointer\" onClick=\"regionwin(\''.$uuid.'\')\"><b><u>'.$regionName.'</u></b></a><br /><br />';
 		/*if ($hasPermit) {
