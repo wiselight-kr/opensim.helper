@@ -34,8 +34,8 @@
 require_once('../include/env_interface.php');
 require_once('./helpers.php');
 
-$request_xml = $HTTP_RAW_POST_DATA;
-error_log('landtool.php: '.$request_xml);    // see /var/log/php/... or /var/log/httpd/error_log
+//$request_xml = $HTTP_RAW_POST_DATA;
+//error_log('landtool.php: '.$request_xml);    // see /var/log/php/... or /var/log/httpd/error_log
 
 
 
