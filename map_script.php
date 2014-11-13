@@ -11,11 +11,6 @@
 //
 require_once(ENV_HELPER_PATH.'/../include/env_interface.php');
 require_once(ENV_HELPER_PATH.'/../include/opensim.mysql.php');
-//require_once(ENV_HELPER_PATH.'/../include/modlos.func.php');
-
-//
-//$course_id = optional_param('course', '1', PARAM_INT);
-//$hasPermit = hasModlosPermit($course_id);
 
 //
 $display_marker = 'dr';	// infomation marker
