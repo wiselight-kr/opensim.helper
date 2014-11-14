@@ -3,8 +3,8 @@
 require_once('../include/env_interface.php');
 
 
-//$request_xml = $HTTP_RAW_POST_DATA;
-//error_log("offline.php: ".$request_xml);
+$request_xml = $HTTP_RAW_POST_DATA;
+error_log("offline.php: ".$request_xml);
 
 
 //
@@ -34,7 +34,8 @@ if ($method == "/SaveMessage/") {
 
 		if (isGUID($from_agent) and isGUID($to_agent)) {
 
-			if (OFFLINE_DB_MYSQLI) $esc_msg = mysqli_real_escape_string($msg);
+			$DbLink->connect();
+			if (OFFLINE_DB_MYSQLI) $esc_msg = mysqli_real_escape_string($DbLink->Link_ID, $msg);
 			else				   $esc_msg = mysql_escape_string($msg);
 
 			$query_str = "INSERT INTO ".OFFLINE_MESSAGE_TBL." (to_uuid,from_uuid,message) VALUES ('".$to_agent."','".$from_agent."','".$esc_msg."')";
