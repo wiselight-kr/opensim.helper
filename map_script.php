@@ -78,8 +78,10 @@ function loadmap() {
 		$rgnY = $size*($sizeY/256);
 		$locX = $locX/256;
 		$locY = $locY/256;
-		$MarkerCoordX = $locX + $dx*($sizeX/256);
-		$MarkerCoordY = $locY + $dy*($sizeY/256);
+		$crdX = $locX + ($sizeX/256-1)*0.5;
+		$crdY = $locY + ($sizeY/256-1)*0.5;
+		$mrkcrdX = $crdX + $dx*($sizeX/256);
+		$mrkcrdY = $crdY + $dy*($sizeY/256);
 
 		$server = '';
 		if ($serverURI!='') {
@@ -108,14 +110,14 @@ function loadmap() {
 	  	var tmp_region_image = new Img("<?php echo $imageURL?>", <?php echo $rgnX?>, <?php echo $rgnY?>);
 		var region_loc = new Icon(tmp_region_image);
 		var all_images = [region_loc, region_loc, region_loc, region_loc, region_loc, region_loc];
-		var marker = new Marker(all_images, new XYPoint(<?php echo $locX?>, <?php echo $locY?>));
+		var marker = new Marker(all_images, new XYPoint(<?php echo $crdX?>, <?php echo $crdY?>));
 		mapInstance.addMarker(marker);
 	
 		var map_marker_img = new Img("images/info.gif", <?php echo $infosize?>, <?php echo $infosize?>);
 		var map_marker_icon = new Icon(map_marker_img);
 		var mapWindow = new MapWindow("<?php echo $windowHTML?>", {closeOnMove: true});
 		var all_images = [map_marker_icon, map_marker_icon, map_marker_icon, map_marker_icon, map_marker_icon, map_marker_icon];
-		var marker = new Marker(all_images, new XYPoint(<?php echo $MarkerCoordX?>, <?php echo $MarkerCoordY?>));
+		var marker = new Marker(all_images, new XYPoint(<?php echo $mrkcrdX?>, <?php echo $mrkcrdY?>));
 		mapInstance.addMarker(marker, mapWindow);
 <?php
 	}
