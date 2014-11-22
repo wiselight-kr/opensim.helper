@@ -56,6 +56,8 @@ function loadmap() {
 		$serverPort = $info['serverPort'];
 		$locX 		= $info['locX'];
 		$locY 		= $info['locY'];
+		$sizeX 		= $info['sizeX'];
+		$sizeY 		= $info['sizeY'];
 		$uuid 		= $info['UUID'];
 
 		$dx = 0.00; $dy = 0.00;
@@ -72,10 +74,12 @@ function loadmap() {
 			$dx = 0.40; 	$dy = -0.40;
 		}
 
+		$rgnX = $size*($sizeX/256);
+		$rgnY = $size*($sizeY/256);
 		$locX = $locX/256;
 		$locY = $locY/256;
-		$MarkerCoordX = $locX + $dx;
-		$MarkerCoordY = $locY + $dy;
+		$MarkerCoordX = $locX + $dx*($sizeX/256);
+		$MarkerCoordY = $locY + $dy*($sizeY/256);
 
 		$server = '';
 		if ($serverURI!='') {
@@ -101,7 +105,7 @@ function loadmap() {
 		$windowHTML.= 'Estate Owner: <b>'.$info['est_fullname'].'</b><br />';
 
 ?>
-	  	var tmp_region_image = new Img("<?php echo $imageURL?>", <?php echo $size?>, <?php echo $size?>);
+	  	var tmp_region_image = new Img("<?php echo $imageURL?>", <?php echo $rgnX?>, <?php echo $rgnY?>);
 		var region_loc = new Icon(tmp_region_image);
 		var all_images = [region_loc, region_loc, region_loc, region_loc, region_loc, region_loc];
 		var marker = new Marker(all_images, new XYPoint(<?php echo $locX?>, <?php echo $locY?>));
