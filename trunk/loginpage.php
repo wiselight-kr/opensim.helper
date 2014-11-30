@@ -3,28 +3,24 @@
 //
 //
 
-require_once(realpath(dirname(__FILE__).'/../../../mainfile.php'));
 require_once(realpath(dirname(__FILE__).'/../include/env_interface.php'));
 
+$LOGIN_SCREEN_CONTENT = "XXX";
 
-$root = & XCube_Root::getSingleton();
-$LOGIN_SCREEN_CONTENT = $root->mContext->mModuleConfig['loginscreen_content'];
+$BOX_TITLE		  = "AAAAAAAAAAA";
+$BOX_COLOR		  = "BBBBBBBBBBB";
+$BOX_INFOTEXT	  = "CCCCCCCCCCC";
 
-$alert = xoopensim_get_loginscreen_alert();
-$BOX_TITLE		  = $alert['title'];
-$BOX_COLOR		  = $alert['borderColor'];
-$BOX_INFOTEXT	  = $alert['information'];
+$GRID_NAME		  = "X Grid";
+$REGION_TTL		  = "ZZZZ";
 
-$GRID_NAME		  = $root->mContext->mModuleConfig['grid_name'];
-$REGION_TTL		  = _MD_XPNSM_REGION;
-
-$DB_STATUS_TTL	  = _MD_XPNSM_DB_STATUS;
-$ONLINE  		  = _MD_XPNSM_ONLINE_TTL;
-$OFFLINE 		  = _MD_XPNSM_OFFLINE_TTL;
-$TOTAL_USER_TTL   = _MD_XPNSM_TOTAL_USERS;
-$TOTAL_REGION_TTL = _MD_XPNSM_TOTAL_REGIONS;
-$LAST_USERS_TTL   = _MD_XPNSM_VISITORS_LAST30DAYS;
-$ONLINE_TTL 	  = _MD_XPNSM_ONLINE_NOW;
+$DB_STATUS_TTL	  = "DB_STATUS_TTL";
+$ONLINE  		  = "ONLIN";
+$OFFLINE 		  = "OFFLINE";
+$TOTAL_USER_TTL   = "TOTAL_USER_TTL";
+$TOTAL_REGION_TTL = "TOTAL_REGION_TTL";
+$LAST_USERS_TTL   = "LAST_USERS_TT";
+$ONLINE_TTL 	  = "ONLINE_TT";
 
 
 $status = opensim_check_db();
