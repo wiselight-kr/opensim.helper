@@ -97,7 +97,7 @@ function convert_to_real($amount)
 
 function update_simulator_balance($agentID, $amount=-1, $secureID=null)
 {
-	if (!isGUID($agnetID)) return false;
+	if (!isGUID($agentID)) return false;
 
 	if ($amount<0) {
 		$amount = get_balance($agentID, $secureID);
@@ -165,11 +165,11 @@ function  move_money($agentID, $destID, $amount, $type, $flags, $desc, $prminven
 	//$userip = $url[3];
  	opensim_set_currency_transaction($agentID, $destID, $amount, $type, $flags, $desc);
 	
-	if (isGUID($agentID) and $angentID!="00000000-0000-0000-0000-0000000000000") {
+	if (isGUID($agentID) and $agentID!="00000000-0000-0000-0000-0000000000000") {
 		opensim_set_currency_balance($agentID, -$amount);
 	}
 
-	if (isGUID($destID)  and $destID  !="00000000-0000-0000-0000-0000000000000") {
+	if (isGUID($destID)  and $destID !="00000000-0000-0000-0000-0000000000000") {
 		opensim_set_currency_balance($destID, $amount);
 	}
 
