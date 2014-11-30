@@ -93,7 +93,7 @@ function buy_land_prep($method_name, $params, $app_data)
 
 
 #
-# Perform the buy
+# Perform the buy (所持金が足りないとき)
 #
 
 xmlrpc_server_register_method($xmlrpc_server, "buyLandPrep", "buy_land");
@@ -123,21 +123,29 @@ function buy_land($method_name, $params, $app_data)
 
 	if ($ret) {
 		if($amount>=0) {
-			if(!process_transaction($agentid, $amount, $ipAddress)) {
+		 	if (!$cost) $cost = convert_to_real($amount);
+			if(!process_transaction($agentid, $cost, $ipAddress)) {
 				$response_xml = xmlrpc_encode(array(
 						'success'	   => False,
 						'errorMessage' => "\n\nThe gateway has declined your transaction. Please update your payment method AND try again later.",
 						'errorURI'	   => "".SYSURL.""));
 			}
-			move_money($agentid, null, $amount, 5002, 0, "Land Purchase", 0, 0, $ipAddress);
-			update_simulator_balance($agentid, -1, $sessionid);
-
-			$response_xml = xmlrpc_encode(array('success' => True));
-		}
-		else {
-			$response_xml = xmlrpc_encode(array('success'     => False,
+			//
+			$enough_money = false;
+			$res = add_money($agentid, $amount, $sessionid);
+			if ($res["success"]) $enough_money = true;
+			
+			if ($enough_money) {
+				$amount += get_balance($agentid);
+				move_money($agentid, null, $amount, 5002, 0, "Land Purchase", 0, 0, $ipAddress);
+				update_simulator_balance($agentid, -1, $sessionid);
+				$response_xml = xmlrpc_encode(array('success' => True));
+			}
+			else {
+				$response_xml = xmlrpc_encode(array('success'     => False,
 												'errorMessage'=> "\n\nYou do not have sufficient funds for this purchase",
 												'errorURI'	  => "".SYSURL.""));
+			}
 		}
 	}
 	else {

@@ -33,6 +33,9 @@
 # 
 #
 
+#$request_xml = $HTTP_RAW_POST_DATA;
+#error_log("helper.php: ".$request_xml);
+
 ####################################################################
 
 #
