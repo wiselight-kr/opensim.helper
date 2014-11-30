@@ -123,7 +123,7 @@ function buy_land($method_name, $params, $app_data)
 
 	if ($ret) {
 		if($amount>=0) {
-			if(!process_transaction($agentid, $real, $ipAddress)) {
+			if(!process_transaction($agentid, $amount, $ipAddress)) {
 				$response_xml = xmlrpc_encode(array(
 						'success'	   => False,
 						'errorMessage' => "\n\nThe gateway has declined your transaction. Please update your payment method AND try again later.",
