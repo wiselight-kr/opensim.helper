@@ -4,7 +4,7 @@ require_once('../include/env_interface.php');
 
 
 $request_xml = $HTTP_RAW_POST_DATA;
-error_log("offline.php: ".$request_xml);
+//error_log("offline.php: ".$request_xml);
 
 
 //
