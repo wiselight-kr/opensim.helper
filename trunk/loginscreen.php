@@ -19,7 +19,7 @@
 </script>
 
 <div id=top_image>
-  <img height=139 src="images/login_screens/logo.png" width=307 />
+  <img src="images/login_screens/logo.png" width=300 />
 </div>
 
 <div id=bottom_left>
