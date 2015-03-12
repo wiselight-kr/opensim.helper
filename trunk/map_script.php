@@ -60,6 +60,10 @@ function loadmap() {
 		$sizeY 		= $info['sizeY'];
 		$uuid 		= $info['UUID'];
 
+		$estateName = $info['estate_name'];
+		$ownerName  = $info['est_fullname'];
+		if (!$ownerName) $ownerName = $info['rgn_fullname'];
+
 		$dx = 0.00; $dy = 0.00;
 		if ($display_marker=='tl') {
 			$dx = -0.40; 	$dy = 0.40;
@@ -102,9 +106,9 @@ function loadmap() {
 			$windowHTML.= 'UUID: <b>'.$uuid.'</b><br /><br />';
 			$windowHTML.= 'IP address: <b>'.$serverIP.'</b><br /><br />';
 		}*/
-		$windowHTML.= 'Coordinates: <b>'. $locX.', '.$locY.'</b><br /><br />';
-		$windowHTML.= 'Estate Name : <b>'.$info['estate_name'].'</b><br /><br />';
-		$windowHTML.= 'Estate Owner: <b>'.$info['est_fullname'].'</b><br />';
+		$windowHTML.= 'Coordinates : <b>'. $locX.', '.$locY.'</b><br /><br />';
+		$windowHTML.= 'Estate Name : <b>'.$estateName.'</b><br /><br />';
+		$windowHTML.= 'Owner  Name : <b>'.$ownerName.'</b><br />';
 
 ?>
 	  	var tmp_region_image = new Img("<?php echo $imageURL?>", <?php echo $rgnX?>, <?php echo $rgnY?>);
