@@ -15,8 +15,14 @@ require_once(ENV_HELPER_PATH.'/../include/opensim.mysql.php');
 //
 $display_marker = 'dr';	// infomation marker
 
-if ($size==16){
-	$minuszoom = 0;   $pluszoom = 32;  $infosize = 8;
+if ($size==4){
+	$minuszoom = 0;   $pluszoom = 8;   $infosize = 2;
+}
+else if ($size==8){
+	$minuszoom = 4;   $pluszoom = 16;  $infosize = 4;
+}
+else if ($size==16){
+	$minuszoom = 8;   $pluszoom = 32;  $infosize = 8;
 }
 else if ($size==32){
 	$minuszoom = 16;  $pluszoom = 64;  $infosize = 10;
@@ -87,43 +93,47 @@ function loadmap() {
 		$mrkcrdX = $crdX + $dx*($sizeX/256);
 		$mrkcrdY = $crdY + $dy*($sizeY/256);
 
-		$server = '';
-		if ($serverURI!='') {
-    		$dec = explode(':', $serverURI);
-    		if (!strncasecmp($dec[0], 'http', 4)) $server = $dec[0].':'.$dec[1];
-		}   
-		if ($server=='') {
-    		$server = 'http://'.$serverIP;
-		}
-		$server = $server.':'.$serverPort;
+		$hsize = 2048/$size;
+		$wsize = 4096/$size;
+		if ($locX<$centerX+$wsize && $locX>$centerX-$wsize && $locY<$centerY+$hsize && $locY>$centerY-$hsize) {
 
-		//
-		$imageuuid = str_replace('-', '', $uuid);
-	  	$imageURL = $server.'/index.php?method=regionImage'.$imageuuid;
+			$server = '';
+			if ($serverURI!='') {
+    			$dec = explode(':', $serverURI);
+    			if (!strncasecmp($dec[0], 'http', 4)) $server = $dec[0].':'.$dec[1];
+			}   
+			if ($server=='') {
+    			$server = 'http://'.$serverIP;
+			}
+			$server = $server.':'.$serverPort;
 
-		$windowHTML = 'Name: <a style=\"cursor:pointer\" onClick=\"regionwin(\''.$uuid.'\')\"><b><u>'.$regionName.'</u></b></a><br /><br />';
-		/*if ($hasPermit) {
-			$windowHTML.= 'UUID: <b>'.$uuid.'</b><br /><br />';
-			$windowHTML.= 'IP address: <b>'.$serverIP.'</b><br /><br />';
-		}*/
-		$windowHTML.= 'Coordinates : <b>'. $locX.', '.$locY.'</b><br /><br />';
-		$windowHTML.= 'Estate Name : <b>'.$estateName.'</b><br /><br />';
-		$windowHTML.= 'Owner  Name : <b>'.$ownerName.'</b><br />';
+			//
+			$imageuuid = str_replace('-', '', $uuid);
+		  	$imageURL = $server.'/index.php?method=regionImage'.$imageuuid;
 
+			$windowHTML = 'Name: <a style=\"cursor:pointer\" onClick=\"regionwin(\''.$uuid.'\')\"><b><u>'.$regionName.'</u></b></a><br /><br />';
+			/*if ($hasPermit) {
+				$windowHTML.= 'UUID: <b>'.$uuid.'</b><br /><br />';
+				$windowHTML.= 'IP address: <b>'.$serverIP.'</b><br /><br />';
+			}*/
+			$windowHTML.= 'Coordinates : <b>'.$locX.', '.$locY.'</b><br /><br />';
+			$windowHTML.= 'Estate Name : <b>'.$estateName.'</b><br /><br />';
+			$windowHTML.= 'Owner  Name : <b>'.$ownerName.'</b><br />';
 ?>
-	  	var tmp_region_image = new Img("<?php echo $imageURL?>", <?php echo $rgnX?>, <?php echo $rgnY?>);
-		var region_loc = new Icon(tmp_region_image);
-		var all_images = [region_loc, region_loc, region_loc, region_loc, region_loc, region_loc];
-		var marker = new Marker(all_images, new XYPoint(<?php echo $crdX?>, <?php echo $crdY?>));
-		mapInstance.addMarker(marker);
-	
-		var map_marker_img = new Img("images/info.gif", <?php echo $infosize?>, <?php echo $infosize?>);
-		var map_marker_icon = new Icon(map_marker_img);
-		var mapWindow = new MapWindow("<?php echo $windowHTML?>", {closeOnMove: true});
-		var all_images = [map_marker_icon, map_marker_icon, map_marker_icon, map_marker_icon, map_marker_icon, map_marker_icon];
-		var marker = new Marker(all_images, new XYPoint(<?php echo $mrkcrdX?>, <?php echo $mrkcrdY?>));
-		mapInstance.addMarker(marker, mapWindow);
+		  	var tmp_region_image = new Img("<?php echo $imageURL?>", <?php echo $rgnX?>, <?php echo $rgnY?>);
+			var region_loc = new Icon(tmp_region_image);
+			var all_images = [region_loc, region_loc, region_loc, region_loc, region_loc, region_loc];
+			var marker = new Marker(all_images, new XYPoint(<?php echo $crdX?>, <?php echo $crdY?>));
+			mapInstance.addMarker(marker);
+		
+			var map_marker_img = new Img("images/info.gif", <?php echo $infosize?>, <?php echo $infosize?>);
+			var map_marker_icon = new Icon(map_marker_img);
+			var mapWindow = new MapWindow("<?php echo $windowHTML?>", {closeOnMove: true});
+			var all_images = [map_marker_icon, map_marker_icon, map_marker_icon, map_marker_icon, map_marker_icon, map_marker_icon];
+			var marker = new Marker(all_images, new XYPoint(<?php echo $mrkcrdX?>, <?php echo $mrkcrdY?>));
+			mapInstance.addMarker(marker, mapWindow);
 <?php
+		}
 	}
 ?>
 }
@@ -133,5 +143,4 @@ function setZoom(size) {
 	var cord = mapInstance.getMapCenter();
 	window.location.href = "<?php echo $world_map_url?>?size="+size+"&ctX="+cord.x+"&ctY="+cord.y+"";
 }
-
 
