@@ -31,7 +31,7 @@
 // Modified by Fumi.Iseki for CMS/LMS '09 5/31
 //
 
-require_once('../include/env_interface.php');
+if (!defined('ENV_READED_INTERFACE')) require_once('../include/env_interface.php');
 require_once('./helpers.php');
 
 
@@ -167,6 +167,7 @@ function buy_land($method_name, $params, $app_data)
 # Process XMLRPC request
 #
 
+if (!isset($HTTP_RAW_POST_DATA)) $HTTP_RAW_POST_DATA = file_get_contents('php://input');
 $request_xml = $HTTP_RAW_POST_DATA;
 //error_log("landtool.php: ".$request_xml);
 

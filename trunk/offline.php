@@ -1,8 +1,8 @@
 <?php
 
-require_once('../include/env_interface.php');
+if (!defined('ENV_READED_INTERFACE')) require_once('../include/env_interface.php');
 
-
+if (!isset($HTTP_RAW_POST_DATA)) $HTTP_RAW_POST_DATA = file_get_contents('php://input');
 $request_xml = $HTTP_RAW_POST_DATA;
 //error_log("offline.php: ".$request_xml);
 

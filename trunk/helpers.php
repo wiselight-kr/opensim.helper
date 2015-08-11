@@ -33,6 +33,7 @@
 # 
 #
 
+if (!isset($HTTP_RAW_POST_DATA)) $HTTP_RAW_POST_DATA = file_get_contents('php://input');
 #$request_xml = $HTTP_RAW_POST_DATA;
 #error_log("helper.php: ".$request_xml);
 
