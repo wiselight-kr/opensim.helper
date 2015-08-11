@@ -51,7 +51,7 @@
 # Modified by Fumi.Iseki for XoopenSim/Modlos
 #
 
-require_once('../include/env_interface.php');
+if (!defined('ENV_READED_INTERFACE')) require_once('../include/env_interface.php');
 require_once('./helpers.php');
 
 
@@ -326,8 +326,9 @@ function claimUser_func($method_name, $params, $app_data)
 # Process the request
 #
 
+if (!isset($HTTP_RAW_POST_DATA)) $HTTP_RAW_POST_DATA = file_get_contents('php://input');
 $request_xml = $HTTP_RAW_POST_DATA;
-#error_log("currency.php: ".$request_xml);
+#error_log('currency.php: '.$request_xml);
 
 xmlrpc_server_call_method($xmlrpc_server, $request_xml, '');
 xmlrpc_server_destroy($xmlrpc_server);
