@@ -66,8 +66,8 @@ function selectRegionRadio(){
 function CheckFieldsNotEmpty(){
 	var mUsername = document.getElementById('firstname_input');
 	var mLastname = document.getElementById('lastname_input');
-	var mPassword =document.getElementById('password_input');
-	var myButton = document.getElementById('conbtn');
+	var mPassword = document.getElementById('password_input');
+	var myButton  = document.getElementById('conbtn');
 		
 	if (( mUsername.value != "") && (mLastname.value != "") && (mPassword.value != "") )
 	{
