@@ -39,7 +39,6 @@ else if ($size==256) {
 else if ($size==512) {
 	$minuszoom = 256; $pluszoom = 0;   $infosize = 60;
 }
-
 ?>
 
 function regionwin(uuid) {
