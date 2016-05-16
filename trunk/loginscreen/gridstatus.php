@@ -46,6 +46,10 @@
                 <td class=gridtext vAlign=top noWrap align=left><strong><?php echo $ONLINE_TTL?> :</strong></td>
                 <td class=gridtext vAlign=top noWrap align=right width="1%"><strong><?php echo $NOW_ONLINE?></strong></td>
               </tr>
+			  <tr bgColor=#151515>
+                <td class=gridtext vAlign=top noWrap align=left><?php echo $HG_ONLINE_TTL?> :</td>
+                <td class=gridtext vAlign=top noWrap align=right width="1%"><?php echo $HG_ONLINE?></td>
+              </tr>
 			  </tbody>
             </table>
           </td>
