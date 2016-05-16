@@ -48,9 +48,10 @@ function regionwin(uuid) {
 
 
 function loadmap() {
-	mapInstance = new ZoomSize(<?php echo $size?>);
+	ZoomSize(<?php echo $size?>);
 	mapInstance = new WORLDMap(document.getElementById('map-container'), {hasZoomControls: false, hasPanningControls: true});
 	mapInstance.centerAndZoomAtWORLDCoord(new XYPoint(<?php echo $centerX?>, <?php echo $centerY?>), 1);
+
 <?php
 	$infos = opensim_get_regions_infos();
 	foreach($infos as $info) 
