@@ -111,14 +111,14 @@ function loadmap() {
 			$imageuuid = str_replace('-', '', $uuid);
 		  	$imageURL = $server.'/index.php?method=regionImage'.$imageuuid;
 
-			$windowHTML = 'Name: <a style=\"cursor:pointer\" onClick=\"regionwin(\''.$uuid.'\')\"><b><u>'.$regionName.'</u></b></a><br /><br />';
+			$windowHTML = 'Name: <a style=\"cursor:pointer\" onClick=\"regionwin(\''.$uuid.'\')\"><strong><u>'.$regionName.'</u></strong></a><br /><br />';
 			/*if ($hasPermit) {
-				$windowHTML.= 'UUID: <b>'.$uuid.'</b><br /><br />';
-				$windowHTML.= 'IP address: <b>'.$serverIP.'</b><br /><br />';
+				$windowHTML.= 'UUID: <strong>'.$uuid.'</strong><br /><br />';
+				$windowHTML.= 'IP address: <strong>'.$serverIP.'</strong><br /><br />';
 			}*/
-			$windowHTML.= 'Coordinates : <b>'.$locX.', '.$locY.'</b><br /><br />';
-			$windowHTML.= 'Estate Name : <b>'.$estateName.'</b><br /><br />';
-			$windowHTML.= 'Owner  Name : <b>'.$ownerName.'</b><br />';
+			$windowHTML.= 'Coordinates : <strong>'.$locX.', '.$locY.'</strong><br /><br />';
+			$windowHTML.= 'Estate Name : <strong>'.$estateName.'</strong><br /><br />';
+			$windowHTML.= 'Owner  Name : <strong>'.$ownerName.'</strong><br />';
 ?>
 		  	var tmp_region_image = new Img("<?php echo $imageURL?>", <?php echo $rgnX?>, <?php echo $rgnY?>);
 			var region_loc = new Icon(tmp_region_image);
