@@ -155,6 +155,8 @@ function user_alert($agentID, $message, $secureID=null)
 
 
 //
+// no save to Transaction
+//
 function  move_money($agentID, $destID, $amount, $type, $flags, $desc, $prminvent=0, $nxtowner=0, $ip="")
 {
 	if (!USE_CURRENCY_SERVER) {
@@ -226,18 +228,17 @@ function send_money($agentID, $amount, $serverURI=null, $secretCode=null)
 
     if (!USE_CURRENCY_SERVER) {
     	$ret = env_set_money_transaction(null, $agentID, $amount, 5003, 0, "Send Money", 0, 0, "");
-    	$res["success"] = $ret;
-    	return $res;
+    	return $ret;
 	}
-
-	$serverip = null;
 
 	//
 	// XML RPC to Region Server
 	//
+	$serverip = null;
+
 	if ($serverURI!=null) {
 		$uri = preg_split("/[:\/]/", $serverURI);
-
+		//
 		if (array_key_exists(3, $uri)) {	// with http:// or https://
 			$serverip = $uri[3];
 			if (array_key_exists(4, $uri)) $httpport = $uri[4];
@@ -254,16 +255,15 @@ function send_money($agentID, $amount, $serverURI=null, $secretCode=null)
 
 	if ($serverip==null) {
     	$results = opensim_get_server_info($agentID);
-		$serverip  = $results["serverIP"];
-		$httpport  = $results["serverHttpPort"];
-		$serveruri = $results["serverURI"];
-		if ($serverip=="") return false;
-		//
+		$serverip  = $results['serverIP'];
+		$httpport  = $results['serverHttpPort'];
+		$serveruri = $results['serverURI'];
+		if ($serverip=='') return false;
 		$serverip = gethostbyname($serverip);
 	}
 
 	if ($secretCode!=null) {
-		$secretCode = md5($secretCode."_".$serverip);
+		$secretCode = md5($secretCode.'_'.$serverip);
 	}
 	else {
 		$secretCode = get_confirm_value($serverip);
@@ -274,7 +274,8 @@ function send_money($agentID, $amount, $serverURI=null, $secretCode=null)
 	$request  = xmlrpc_encode_request('SendMoneyBalance', $params);
 	$response = do_call($serverip, $httpport, $serveruri, $request);
 
-	return $response;
+	if ($response!=null and array_key_exists('success', $response)) return $response['success'];
+	return false;
 }
 
 
@@ -283,6 +284,7 @@ function  get_balance($agentID, $secureID=null)
 {
 	$cash = -1;
 	if (!isGUID($agentID)) return (integer)$cash;
+	if (!isGUID($secureID, true)) return (integer)$cash;
 
 	//
 	if (!USE_CURRENCY_SERVER) {
@@ -293,42 +295,45 @@ function  get_balance($agentID, $secureID=null)
 	//
 	// XML RPC to Region Server
 	//
-	if (!isGUID($secureID, true)) return (integer)$cash;
-
 	$results = opensim_get_server_info($agentID);
-	$serverip  = $results["serverIP"];
-	$httpport  = $results["serverHttpPort"];
-	$serveruri = $results["serverURI"];
-	if ($serverip=="") return (integer)$cash;
+	$serverip  = $results['serverIP'];
+	$httpport  = $results['serverHttpPort'];
+	$serveruri = $results['serverURI'];
+	if ($serverip=='') return (integer)$cash;
+	$serverip = gethostbyname($serverip);
 
 	$results = opensim_get_avatar_session($agentID);
-	$sessionID = $results["sessionID"];
+print_r($results);
+	$sessionID = $results['sessionID'];
 	if ($sessionID=="")  return (integer)$cash;
-	if ($secureID==null) $secureID = $results["secureID"];
+	if ($secureID==null) $secureID = $results['secureID'];
 	
 	$req	  = array('clientUUID'=>$agentID, 'clientSessionID'=>$sessionID, 'clientSecureSessionID'=>$secureID);
 	$params   = array($req);
 	$request  = xmlrpc_encode_request('GetBalance', $params);
 	$response = do_call($serverip, $httpport, $serveruri, $request);
 
-	if ($response) $cash = $response["balance"];
+	if ($response!=null and array_key_exists('balance', $response)) $cash = $response['balance'];
 	return (integer)$cash;
 }
 
 
+
+///////////////////////////////////////////////////////////////////////////////////////
+
 // XML RPC
 function do_call($host, $port, $uri, $request)
 {
-	$url = "";
-	if ($uri!="") {
-		$dec = explode(":", $uri);
-		if (!strncasecmp($dec[0], "http", 4)) $url = "$dec[0]:$dec[1]";
+	$url = '';
+	if ($uri!='') {
+		$dec = explode(':', $uri);
+		if (!strncasecmp($dec[0], 'http', 4)) $url = "$dec[0]:$dec[1]";
 	}   
-	if ($url=="") $url ="http://$host";
+	if ($url=='') $url ="http://$host";
 	$url = "$url:$port/";
 
-	$header[] = "Content-type: text/xml";
-	$header[] = "Content-length: ".strlen($request);
+	$header[] = 'Content-type: text/xml';
+	$header[] = 'Content-length: '.strlen($request);
 	
 	$ch = curl_init();   
 	curl_setopt($ch, CURLOPT_URL, $url);
@@ -349,7 +354,7 @@ function do_call($host, $port, $uri, $request)
 	print_r($ret);
 	$rt = ob_get_contents();
 	ob_end_clean();
-	error_log("[do_call] responce = ".$rt);
+	error_log('[do_call] responce = '.$rt);
 	*/
 
 	return $ret;
@@ -358,8 +363,8 @@ function do_call($host, $port, $uri, $request)
 
 function  get_confirm_value($ipAddress)
 {
-	$key = env_get_config("currency_script_key");
-	if ($key=='') $key = "1234567883789";
+	$key = env_get_config('currency_script_key');
+	if ($key=='') $key = '123456789';
 	$confirmvalue = md5($key."_".$ipAddress);
 
 	return $confirmvalue;
