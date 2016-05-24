@@ -98,6 +98,9 @@ function convert_to_real($amount)
 }
 
 
+//
+// アバターがログインしていないと使用できない
+//
 function update_simulator_balance($agentID, $amount=-1, $secureID=null)
 {
 	if (!isGUID($agentID)) return false;
@@ -113,44 +116,49 @@ function update_simulator_balance($agentID, $amount=-1, $secureID=null)
 	$results = opensim_get_server_info($agentID);
 	if (!$results) return false;
 
-	$serverip  = $results["serverIP"];
-	$httpport  = $results["serverHttpPort"];
-	$serveruri = $results["serverURI"];
+	$serverip  = $results['serverIP'];
+	$httpport  = $results['serverHttpPort'];
+	$serveruri = $results['serverURI'];
 
 	$results = opensim_get_avatar_session($agentID);
 	if (!$results) return false;
-	$sessionID = $results["sessionID"];
-	if ($secureID==null) $secureID = $results["secureID"];
+	$sessionID = $results['sessionID'];
+	if ($secureID==null) $secureID = $results['secureID'];
 
-	$req	  = array('clientUUID'=>$agentID, 'clientSessionID'=>$sessionID, 'clientSecureSessionID'=>$secureID, "Balance"=>$amount);
+	$req	  = array('clientUUID'=>$agentID, 'clientSessionID'=>$sessionID, 'clientSecureSessionID'=>$secureID, 'Balance'=>$amount);
 	$params   = array($req);
 	$request  = xmlrpc_encode_request('UpdateBalance', $params);
 	$response = do_call($serverip, $httpport, $serveruri, $request); 
 
-	return $response;
+	if ($response!=null and array_key_exists('success', $response)) return $response['success'];
+	return false;
 }
 
 
+//
+// アバターがログインしていないと使用できない
+//
 function user_alert($agentID, $message, $secureID=null)
 {
 	$results = opensim_get_server_info($agentID);
 	if (!$results) return false;
 
-	$serverip  = $results["serverIP"];
-	$httpport  = $results["serverHttpPort"];
-	$serveruri = $results["serverURI"];
+	$serverip  = $results['serverIP'];
+	$httpport  = $results['serverHttpPort'];
+	$serveruri = $results['serverURI'];
 	
 	$results = opensim_get_avatar_session($agentID);
 	if (!$results) return false;
-	$sessionID = $results["sessionID"];
-	if ($secureID==null) $secureID = $results["secureID"];
+	$sessionID = $results['sessionID'];
+	if ($secureID==null) $secureID = $results['secureID'];
 
 	$req 	  = array('clientUUID'=>$agentID, 'clientSessionID'=>$sessionID, 'clientSecureSessionID'=>$secureID, 'Description'=>$message); 
 	$params   = array($req);
 	$request  = xmlrpc_encode_request('UserAlert', $params);
 	$response = do_call($serverip, $httpport, $serveruti, $request);
 
-	return $response;
+	if ($response!=null and array_key_exists('success', $response)) return $response['success'];
+	return false;
 }
 
 
@@ -166,28 +174,27 @@ function  move_money($agentID, $destID, $amount, $type, $flags, $desc, $prminven
 
  	opensim_set_currency_transaction($agentID, $destID, $amount, $type, $flags, $desc);
 	
-	if (isGUID($agentID) and $agentID!="00000000-0000-0000-0000-0000000000000") {
+	if (isGUID($agentID) and $agentID!='00000000-0000-0000-0000-0000000000000') {
 		opensim_set_currency_balance($agentID, -$amount);
 	}
 
-	if (isGUID($destID)  and $destID !="00000000-0000-0000-0000-0000000000000") {
+	if (isGUID($destID)  and $destID !='00000000-0000-0000-0000-0000000000000') {
 		opensim_set_currency_balance($destID, $amount);
 	}
 
 	return true;
 }
 
-
+//
+// アバターがログインしていないと使用できない
 //
 function  add_money($agentID, $amount, $secureID=null) 
 {
 	if (!isGUID($agentID)) return false;
 
-	//
 	if (!USE_CURRENCY_SERVER) {
-		$ret = env_set_money_transaction(null, $agentID, $amount, 5010, 0, "Add Money", 0, 0, "");
-		$res["success"] = $ret;
-		return $res;
+		$ret = env_set_money_transaction(null, $agentID, $amount, 5010, 0, 'Add Money', 0, 0, '');
+		return $ret;
 	}
 
 	//
@@ -196,25 +203,66 @@ function  add_money($agentID, $amount, $secureID=null)
 	if (!isGUID($secureID, true)) return false;
 
 	$results = opensim_get_server_info($agentID);
-	$serverip  = $results["serverIP"];
-	$httpport  = $results["serverHttpPort"];
-	$serveruri = $results["serverURI"];
-	if ($serverip=="") return false;
+	$serverip  = $results['serverIP'];
+	$httpport  = $results['serverHttpPort'];
+	$serveruri = $results['serverURI'];
+	if ($serverip=='') return false;
 
 	$results = opensim_get_avatar_session($agentID);
-	$sessionID = $results["sessionID"];
-	//if ($sessionID=="")  return false;
-	if ($secureID==null) $secureID = $results["secureID"];
+	$sessionID = $results['sessionID'];
+	if ($secureID==null) $secureID = $results['secureID'];
 	
 	$req	  = array('clientUUID'=>$agentID, 'clientSessionID'=>$sessionID, 'clientSecureSessionID'=>$secureID, 'amount'=>$amount);
 	$params   = array($req);
 	$request  = xmlrpc_encode_request('AddBankerMoney', $params);
-
 	$response = do_call($serverip, $httpport, $serveruri, $request);
 
-	return $response;
+	if ($response!=null and array_key_exists('success', $response)) return $response['success'];
+	return false;
 }
 
+
+//
+// アバターがログインしていないと使用できない
+//
+function  get_balance($agentID, $secureID=null)
+{
+	$cash = -1;
+	if (!isGUID($agentID)) return (integer)$cash;
+
+	if (!USE_CURRENCY_SERVER) {
+		$cash = env_get_money_balance($agentID);
+		return (integer)$cash;
+	}
+
+	//
+	// XML RPC to Region Server
+	//
+	if (!isGUID($secureID, true)) return (integer)$cash;
+
+	$results = opensim_get_server_info($agentID);
+	$serverip  = $results['serverIP'];
+	$httpport  = $results['serverHttpPort'];
+	$serveruri = $results['serverURI'];
+	if ($serverip=='') return (integer)$cash;
+
+	$results = opensim_get_avatar_session($agentID);
+	$sessionID = $results['sessionID'];
+	if ($sessionID=='')  return (integer)$cash;
+	if ($secureID==null) $secureID = $results['secureID'];
+	
+	$req	  = array('clientUUID'=>$agentID, 'clientSessionID'=>$sessionID, 'clientSecureSessionID'=>$secureID);
+	$params   = array($req);
+	$request  = xmlrpc_encode_request('GetBalance', $params);
+	$response = do_call($serverip, $httpport, $serveruri, $request);
+
+	if ($response!=null and array_key_exists('balance', $response)) $cash = $response['balance'];
+	return (integer)$cash;
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //
 // Send the money to avatar for bonus 	by Milo
@@ -227,7 +275,7 @@ function send_money($agentID, $amount, $serverURI=null, $secretCode=null)
     if (!isGUID($agentID)) return false;
 
     if (!USE_CURRENCY_SERVER) {
-    	$ret = env_set_money_transaction(null, $agentID, $amount, 5003, 0, "Send Money", 0, 0, "");
+    	$ret = env_set_money_transaction(null, $agentID, $amount, 5003, 0, 'Send Money', 0, 0, '');
     	return $ret;
 	}
 
@@ -259,7 +307,7 @@ function send_money($agentID, $amount, $serverURI=null, $secretCode=null)
 		$httpport  = $results['serverHttpPort'];
 		$serveruri = $results['serverURI'];
 		if ($serverip=='') return false;
-		$serverip = gethostbyname($serverip);
+		//$serverip = gethostbyname($serverip);
 	}
 
 	if ($secretCode!=null) {
@@ -279,47 +327,8 @@ function send_money($agentID, $amount, $serverURI=null, $secretCode=null)
 }
 
 
-//
-function  get_balance($agentID, $secureID=null)
-{
-	$cash = -1;
-	if (!isGUID($agentID)) return (integer)$cash;
-	if (!isGUID($secureID, true)) return (integer)$cash;
 
-	//
-	if (!USE_CURRENCY_SERVER) {
-		$cash = env_get_money_balance($agentID);
-		return (integer)$cash;
-	}
-
-	//
-	// XML RPC to Region Server
-	//
-	$results = opensim_get_server_info($agentID);
-	$serverip  = $results['serverIP'];
-	$httpport  = $results['serverHttpPort'];
-	$serveruri = $results['serverURI'];
-	if ($serverip=='') return (integer)$cash;
-	$serverip = gethostbyname($serverip);
-
-	$results = opensim_get_avatar_session($agentID);
-print_r($results);
-	$sessionID = $results['sessionID'];
-	if ($sessionID=="")  return (integer)$cash;
-	if ($secureID==null) $secureID = $results['secureID'];
-	
-	$req	  = array('clientUUID'=>$agentID, 'clientSessionID'=>$sessionID, 'clientSecureSessionID'=>$secureID);
-	$params   = array($req);
-	$request  = xmlrpc_encode_request('GetBalance', $params);
-	$response = do_call($serverip, $httpport, $serveruri, $request);
-
-	if ($response!=null and array_key_exists('balance', $response)) $cash = $response['balance'];
-	return (integer)$cash;
-}
-
-
-
-///////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // XML RPC
 function do_call($host, $port, $uri, $request)
