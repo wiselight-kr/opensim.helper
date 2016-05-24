@@ -98,7 +98,6 @@ function convert_to_real($amount)
 }
 
 
-
 function update_simulator_balance($agentID, $amount=-1, $secureID=null)
 {
 	if (!isGUID($agentID)) return false;
@@ -113,6 +112,7 @@ function update_simulator_balance($agentID, $amount=-1, $secureID=null)
 
 	$results = opensim_get_server_info($agentID);
 	if (!$results) return false;
+
 	$serverip  = $results["serverIP"];
 	$httpport  = $results["serverHttpPort"];
 	$serveruri = $results["serverURI"];
@@ -131,11 +131,11 @@ function update_simulator_balance($agentID, $amount=-1, $secureID=null)
 }
 
 
-
 function user_alert($agentID, $message, $secureID=null)
 {
 	$results = opensim_get_server_info($agentID);
 	if (!$results) return false;
+
 	$serverip  = $results["serverIP"];
 	$httpport  = $results["serverHttpPort"];
 	$serveruri = $results["serverURI"];
@@ -154,19 +154,14 @@ function user_alert($agentID, $message, $secureID=null)
 }
 
 
-
 //
 function  move_money($agentID, $destID, $amount, $type, $flags, $desc, $prminvent=0, $nxtowner=0, $ip="")
 {
 	if (!USE_CURRENCY_SERVER) {
-  		env_set_money_transaction($agentID, $destID, $amount, $type, $flags, $desc, $prminvent, $nxtowner, $ip);
-		return true;
+  		$ret = env_set_money_transaction($agentID, $destID, $amount, $type, $flags, $desc, $prminvent, $nxtowner, $ip);
+		return $ret;
 	}
 
-
-	// Direct DB access for security
-	//$url = preg_split("/[:\/]/", USER_SERVER_URI);
-	//$userip = $url[3];
  	opensim_set_currency_transaction($agentID, $destID, $amount, $type, $flags, $desc);
 	
 	if (isGUID($agentID) and $agentID!="00000000-0000-0000-0000-0000000000000") {
@@ -181,7 +176,6 @@ function  move_money($agentID, $destID, $amount, $type, $flags, $desc, $prminven
 }
 
 
-
 //
 function  add_money($agentID, $amount, $secureID=null) 
 {
@@ -189,8 +183,8 @@ function  add_money($agentID, $amount, $secureID=null)
 
 	//
 	if (!USE_CURRENCY_SERVER) {
-		env_set_money_transaction(null, $agentID, $amount, 5010, 0, "Add Money", 0, 0, "");
-		$res["success"] = true;
+		$ret = env_set_money_transaction(null, $agentID, $amount, 5010, 0, "Add Money", 0, 0, "");
+		$res["success"] = $ret;
 		return $res;
 	}
 
@@ -220,31 +214,54 @@ function  add_money($agentID, $amount, $secureID=null)
 }
 
 
-
 //
-// Send the money to avatar for bonus 
-// 										by Milo
+// Send the money to avatar for bonus 	by Milo
 //
-function send_money($agentID, $amount, $secretCode=null)
+// $serverURI:  処理を行うリージョンサーバの URI
+// $secretCode: MoneyServer.ini に書かれた MoneyScriptAccessKey の値．
+//
+function send_money($agentID, $amount, $serverURI=null, $secretCode=null)
 {
     if (!isGUID($agentID)) return false;
 
     if (!USE_CURRENCY_SERVER) {
-    	env_set_money_transaction(null, $agentID, $amount, 5003, 0, "Send Money", 0, 0, "");
-    	$res["success"] = true;
+    	$ret = env_set_money_transaction(null, $agentID, $amount, 5003, 0, "Send Money", 0, 0, "");
+    	$res["success"] = $ret;
     	return $res;
 	}
+
+	$serverip = null;
 
 	//
 	// XML RPC to Region Server
 	//
-    $results = opensim_get_server_info($agentID);
-	$serverip  = $results["serverIP"];
-	$httpport  = $results["serverHttpPort"];
-	$serveruri = $results["serverURI"];
-	if ($serverip=="") return false;
+	if ($serverURI!=null) {
+		$uri = preg_split("/[:\/]/", $serverURI);
 
-	$serverip = gethostbyname($serverip);
+		if (array_key_exists(3, $uri)) {	// with http:// or https://
+			$serverip = $uri[3];
+			if (array_key_exists(4, $uri)) $httpport = $uri[4];
+			else                           $httpport = '9000';
+			$serveruri = $uri[0].'://'.$serverip.':'.$httpport.'/';	
+		}
+		else { 								// with no http:// and https://
+			$serverip = $uri[0];
+			if (array_key_exists(1, $uri)) $httpport = $uri[1];
+			else                           $httpport = '9000';
+			$serveruri = 'http://'.$serverip.':'.$httpport.'/';	
+		}
+	}
+
+	if ($serverip==null) {
+    	$results = opensim_get_server_info($agentID);
+		$serverip  = $results["serverIP"];
+		$httpport  = $results["serverHttpPort"];
+		$serveruri = $results["serverURI"];
+		if ($serverip=="") return false;
+		//
+		$serverip = gethostbyname($serverip);
+	}
+
 	if ($secretCode!=null) {
 		$secretCode = md5($secretCode."_".$serverip);
 	}
@@ -259,7 +276,6 @@ function send_money($agentID, $amount, $secretCode=null)
 
 	return $response;
 }
-
 
 
 //
@@ -298,8 +314,6 @@ function  get_balance($agentID, $secureID=null)
 	if ($response) $cash = $response["balance"];
 	return (integer)$cash;
 }
-
-
 
 
 // XML RPC
@@ -342,14 +356,11 @@ function do_call($host, $port, $uri, $request)
 }
 
 
-
 function  get_confirm_value($ipAddress)
 {
 	$key = env_get_config("currency_script_key");
-	if ($key=="") $key = "1234567883789";
+	if ($key=='') $key = "1234567883789";
 	$confirmvalue = md5($key."_".$ipAddress);
 
 	return $confirmvalue;
 }
-
-?>
