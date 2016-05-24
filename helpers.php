@@ -265,10 +265,13 @@ function  get_balance($agentID, $secureID=null)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //
-// Send the money to avatar for bonus 	by Milo
+// Send the money to avatar for bonus
+//                                         by Milo
 //
-// $serverURI:  処理を行うリージョンサーバの URI
+// $serverURI:  処理を行うリージョンサーバの URI （オフライン時対応）
 // $secretCode: MoneyServer.ini に書かれた MoneyScriptAccessKey の値．
+// 
+// アバターが一度もログインしていない場合は，送金できない．
 //
 function send_money($agentID, $amount, $serverURI=null, $secretCode=null)
 {
