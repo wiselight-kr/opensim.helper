@@ -29,13 +29,16 @@
 # need external variable  by Fumi.Iseki
 #	class DB
 # 	CURRENCY_DB_HOST, CURRENCY_DB_NAME, CURRENCY_DB_USER, CURRENCY_DB_PASS
-#	CURRENCY_MONEY_TBL,	CURRENCY_TRANSACTION_TBL
+#	CURRENCY_MONEY_TBL,	CURRENCY_TRANSACTION_TBL, .....
 # 
 #
+require_once(CMS_MODULE_PATH.'/jbxl/jbxl_tools.php');
 
 if (!isset($HTTP_RAW_POST_DATA)) $HTTP_RAW_POST_DATA = file_get_contents('php://input');
 #$request_xml = $HTTP_RAW_POST_DATA;
 #error_log("helper.php: ".$request_xml);
+
+
 
 ####################################################################
 
@@ -109,6 +112,7 @@ function  convert_to_real($amount)
  function  update_simulator_balance($agentID, $amount=-1, $secureID=null)
  function  add_money($agentID, $amount, $secureID=null) 
  function  get_balance($agentID, $secureID=null)
+ function  move_money($srcID, $dstID, $amount, $type, $desc, $prminvent=0, $nxtowner=0, $ip='')
 */
 
 //
@@ -116,14 +120,16 @@ function  convert_to_real($amount)
 //
 function  user_alert($agentID, $message, $secureID=null)
 {
-	$results = opensim_get_server_info($agentID);
-	if (!$results) return false;
+	if (!USE_CURRENCY_SERVER) 	  return false;
+	if (!isGUID($agentID)) 		  return false;
+	if (!isGUID($secureID, true)) return false;
 
-	$serverip  = $results['serverIP'];
-	$httpport  = $results['serverHttpPort'];
-	$serveruri = $results['serverURI'];
+	// XML RPC to Region Server
+	$results = opensim_get_userinfo($agentID);
+	$server  = jbxl_make_url($results['simip'], 9000);
+	if ($serve['host']=='') return false;
 	
-	$results = opensim_get_avatar_session($agentID);
+	$results = opensim_get_avatar_session($agentID);		// use Presence Table
 	if (!$results) return false;
 	$sessionID = $results['sessionID'];
 	if ($secureID==null) $secureID = $results['secureID'];
@@ -131,7 +137,7 @@ function  user_alert($agentID, $message, $secureID=null)
 	$req 	  = array('clientUUID'=>$agentID, 'clientSessionID'=>$sessionID, 'clientSecureSessionID'=>$secureID, 'Description'=>$message); 
 	$params   = array($req);
 	$request  = xmlrpc_encode_request('UserAlert', $params);
-	$response = do_call($serverip, $httpport, $serveruti, $request);
+	$response = do_call($server['url'], $server['port'], $request);
 
 	if ($response!=null and array_key_exists('success', $response)) return $response['success'];
 	return false;
@@ -143,7 +149,9 @@ function  user_alert($agentID, $message, $secureID=null)
 //
 function  update_simulator_balance($agentID, $amount=-1, $secureID=null)
 {
-	if (!isGUID($agentID)) return false;
+	if (!USE_CURRENCY_SERVER) 	  return false;
+	if (!isGUID($agentID)) 		  return false;
+	if (!isGUID($secureID, true)) return false;
 
 	if ($amount<0) {
 		$amount = get_balance($agentID, $secureID);
@@ -151,14 +159,9 @@ function  update_simulator_balance($agentID, $amount=-1, $secureID=null)
 	}
 
 	// XML RPC to Region Server
-	if (!isGUID($secureID, true)) return false;
-
-	$results = opensim_get_server_info($agentID);
-	if (!$results) return false;
-
-	$serverip  = $results['serverIP'];
-	$httpport  = $results['serverHttpPort'];
-	$serveruri = $results['serverURI'];
+	$results = opensim_get_userinfo($agentID);
+	$server  = jbxl_make_url($results['simip'], 9000);
+	if ($serve['host']=='') return false;
 
 	$results = opensim_get_avatar_session($agentID);
 	if (!$results) return false;
@@ -168,7 +171,7 @@ function  update_simulator_balance($agentID, $amount=-1, $secureID=null)
 	$req	  = array('clientUUID'=>$agentID, 'clientSessionID'=>$sessionID, 'clientSecureSessionID'=>$secureID, 'Balance'=>$amount);
 	$params   = array($req);
 	$request  = xmlrpc_encode_request('UpdateBalance', $params);
-	$response = do_call($serverip, $httpport, $serveruri, $request); 
+	$response = do_call($server['url'], $server['port'], $request);
 
 	if ($response!=null and array_key_exists('success', $response)) return $response['success'];
 	return false;
@@ -180,23 +183,14 @@ function  update_simulator_balance($agentID, $amount=-1, $secureID=null)
 //
 function  add_money($agentID, $amount, $secureID=null) 
 {
-	if (!isGUID($agentID)) return false;
-
-    if (!USE_CURRENCY_SERVER) {
-		//return env_set_money_transaction(null, $agentID, $amount, 5010, 0, 'Add Money', 0, 0, '');
-		return false;
-	}
-
-	//
-	// XML RPC to Region Server
-	//
+	if (!USE_CURRENCY_SERVER) 	  return false;
+	if (!isGUID($agentID)) 		  return false;
 	if (!isGUID($secureID, true)) return false;
 
-	$results = opensim_get_server_info($agentID);
-	$serverip  = $results['serverIP'];
-	$httpport  = $results['serverHttpPort'];
-	$serveruri = $results['serverURI'];
-	if ($serverip=='') return false;
+	// XML RPC to Region Server
+	$results = opensim_get_userinfo($agentID);
+	$server  = jbxl_make_url($results['simip'], 9000);
+	if ($serve['host']=='') return false;
 
 	$results = opensim_get_avatar_session($agentID);
 	$sessionID = $results['sessionID'];
@@ -205,7 +199,7 @@ function  add_money($agentID, $amount, $secureID=null)
 	$req	  = array('clientUUID'=>$agentID, 'clientSessionID'=>$sessionID, 'clientSecureSessionID'=>$secureID, 'amount'=>$amount);
 	$params   = array($req);
 	$request  = xmlrpc_encode_request('AddBankerMoney', $params);
-	$response = do_call($serverip, $httpport, $serveruri, $request);
+	$response = do_call($server['url'], $server['port'], $request);
 
 	if ($response!=null and array_key_exists('success', $response)) return $response['success'];
 	return false;
@@ -218,33 +212,24 @@ function  add_money($agentID, $amount, $secureID=null)
 function  get_balance($agentID, $secureID=null)
 {
 	$cash = -1;
-	if (!isGUID($agentID)) return (integer)$cash;
-
-    if (!USE_CURRENCY_SERVER) {
-		//return $cash = env_get_money_balance($agentID);
-		return (integer)$cash;
-	}
-
-	//
-	// XML RPC to Region Server
-	//
+	if (!USE_CURRENCY_SERVER) 	  return (integer)$cash;
+	if (!isGUID($agentID)) 		  return (integer)$cash;
 	if (!isGUID($secureID, true)) return (integer)$cash;
 
-	$results = opensim_get_server_info($agentID);
-	$serverip  = $results['serverIP'];
-	$httpport  = $results['serverHttpPort'];
-	$serveruri = $results['serverURI'];
-	if ($serverip=='') return (integer)$cash;
+	// XML RPC to Region Server
+	$results = opensim_get_userinfo($agentID);
+	$server  = jbxl_make_url($results['simip'], 9000);
+	if ($serve['host']=='') return (integer)$cash;
 
 	$results = opensim_get_avatar_session($agentID);
-	$sessionID = $results['sessionID'];
 	if ($sessionID=='')  return (integer)$cash;
+	$sessionID = $results['sessionID'];
 	if ($secureID==null) $secureID = $results['secureID'];
 	
 	$req	  = array('clientUUID'=>$agentID, 'clientSessionID'=>$sessionID, 'clientSecureSessionID'=>$secureID);
 	$params   = array($req);
 	$request  = xmlrpc_encode_request('GetBalance', $params);
-	$response = do_call($serverip, $httpport, $serveruri, $request);
+	$response = do_call($server['url'], $server['port'], $request);
 
 	if ($response!=null and array_key_exists('balance', $response)) $cash = $response['balance'];
 	return (integer)$cash;
@@ -265,55 +250,30 @@ function  get_balance($agentID, $secureID=null)
 //
 function  send_money($agentID, $amount, $serverURI=null, $secretCode=null)
 {
-    if (!isGUID($agentID)) return false;
+	if (!USE_CURRENCY_SERVER) 	  return false;
+	if (!isGUID($agentID)) 		  return false;
 
-    if (!USE_CURRENCY_SERVER) {
-    	//return env_set_money_transaction(null, $agentID, $amount, 5003, 0, 'Send Money', 0, 0, '');
-    	return false;
-	}
-
-	//
 	// XML RPC to Region Server
-	//
-	$serverip = null;
+	$server['url'] = null;
+	if ($serverURI!=null) $server = jbxl_make_url($serverURI, 9000);
 
-	if ($serverURI!=null) {
-		$uri = preg_split("/[:\/]/", $serverURI);
-		//
-		if (array_key_exists(3, $uri)) {	// with http:// or https://
-			$serverip = $uri[3];
-			if (array_key_exists(4, $uri)) $httpport = $uri[4];
-			else                           $httpport = '9000';
-			$serveruri = $uri[0].'://'.$serverip.':'.$httpport.'/';	
-		}
-		else { 								// with no http:// and https://
-			$serverip = $uri[0];
-			if (array_key_exists(1, $uri)) $httpport = $uri[1];
-			else                           $httpport = '9000';
-			$serveruri = 'http://'.$serverip.':'.$httpport.'/';	
-		}
+	if ($server['url']==null) {
+		$results = opensim_get_userinfo($agentID);
+		$server  = jbxl_make_url($results['simip'], 9000);
 	}
-
-	if ($serverip==null) {
-    	$results = opensim_get_server_info($agentID);
-		$serverip  = $results['serverIP'];
-		$httpport  = $results['serverHttpPort'];
-		$serveruri = $results['serverURI'];
-		if ($serverip=='') return false;
-		//$serverip = gethostbyname($serverip);
-	}
+	if ($server['url']==null) return false;
 
 	if ($secretCode!=null) {
-		$secretCode = md5($secretCode.'_'.$serverip);
+		$secretCode = md5($secretCode.'_'.$server['host']);
 	}
 	else {
-		$secretCode = get_confirm_value($serverip);
+		$secretCode = get_confirm_value($server['host']);
 	}
 
 	$req 	  = array('clientUUID'=>$agentID, 'secretAccessCode'=>$secretCode, 'amount'=>$amount);
 	$params   = array($req);
 	$request  = xmlrpc_encode_request('SendMoneyBalance', $params);
-	$response = do_call($serverip, $httpport, $serveruri, $request);
+	$response = do_call($server['url'], $server['port'], $request);
 
 	if ($response!=null and array_key_exists('success', $response)) return $response['success'];
 	return false;
@@ -323,10 +283,7 @@ function  send_money($agentID, $amount, $serverURI=null, $secretCode=null)
 //
 function  move_money($srcID, $dstID, $amount, $type, $desc, $prminvent=0, $nxtowner=0, $ip='')
 {
-    if (!USE_CURRENCY_SERVER) {
-  		//return env_set_money_transaction($srcID, $dstID, $amount, $type, 0, $desc, $prminvent, $nxtowner, $ip);
-		return false;
-	}
+	if (!USE_CURRENCY_SERVER) return false;
 
  	$ret = opensim_set_currency_transaction($srcID, $dstID, $amount, $type, 0, $desc);
 	if ($ret) {
@@ -347,21 +304,15 @@ function  move_money($srcID, $dstID, $amount, $type, $desc, $prminvent=0, $nxtow
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // XML RPC
-function  do_call($host, $port, $uri, $request)
+function  do_call($uri, $port, $request)
 {
-	$url = '';
-	if ($uri!='') {
-		$dec = explode(':', $uri);
-		if (!strncasecmp($dec[0], 'http', 4)) $url = "$dec[0]:$dec[1]";
-	}   
-	if ($url=='') $url ="http://$host";
-	$url = "$url:$port/";
+	$server = jbxl_make_url($uri, $port);
 
 	$header[] = 'Content-type: text/xml';
 	$header[] = 'Content-length: '.strlen($request);
 	
 	$ch = curl_init();   
-	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_URL, $server['url']);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 	curl_setopt($ch, CURLOPT_TIMEOUT, 3);
 	curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
