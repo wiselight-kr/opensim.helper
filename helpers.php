@@ -43,7 +43,7 @@ if (!isset($HTTP_RAW_POST_DATA)) $HTTP_RAW_POST_DATA = file_get_contents('php://
 # User provided interface routine to interface with payment processor
 #
 
-function process_transaction($avatarID, $cost, $ipAddress)
+function  process_transaction($avatarID, $cost, $ipAddress)
 {
 	# Do Credit Card Processing here!  Return False if it fails!
 	# Remember, $amount is stored without decimal places, however it's assumed
@@ -58,13 +58,14 @@ function process_transaction($avatarID, $cost, $ipAddress)
 }
 
 
+
 ###################### No user serviceable parts below #####################
 
 #
 # Helper routines
 #
 
-function convert_to_real($amount)
+function  convert_to_real($amount)
 {
 	/*
 	if($currency == 0) return 0;
@@ -98,10 +99,49 @@ function convert_to_real($amount)
 }
 
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*
+下記関数は現在のところ，アバターがログインしていないと使用できない
+
+ function  user_alert($agentID, $message, $secureID=null)
+ function  update_simulator_balance($agentID, $amount=-1, $secureID=null)
+ function  add_money($agentID, $amount, $secureID=null) 
+ function  get_balance($agentID, $secureID=null)
+*/
+
 //
 // アバターがログインしていないと使用できない
 //
-function update_simulator_balance($agentID, $amount=-1, $secureID=null)
+function  user_alert($agentID, $message, $secureID=null)
+{
+	$results = opensim_get_server_info($agentID);
+	if (!$results) return false;
+
+	$serverip  = $results['serverIP'];
+	$httpport  = $results['serverHttpPort'];
+	$serveruri = $results['serverURI'];
+	
+	$results = opensim_get_avatar_session($agentID);
+	if (!$results) return false;
+	$sessionID = $results['sessionID'];
+	if ($secureID==null) $secureID = $results['secureID'];
+
+	$req 	  = array('clientUUID'=>$agentID, 'clientSessionID'=>$sessionID, 'clientSecureSessionID'=>$secureID, 'Description'=>$message); 
+	$params   = array($req);
+	$request  = xmlrpc_encode_request('UserAlert', $params);
+	$response = do_call($serverip, $httpport, $serveruti, $request);
+
+	if ($response!=null and array_key_exists('success', $response)) return $response['success'];
+	return false;
+}
+
+
+//
+// アバターがログインしていないと使用できない
+//
+function  update_simulator_balance($agentID, $amount=-1, $secureID=null)
 {
 	if (!isGUID($agentID)) return false;
 
@@ -138,63 +178,13 @@ function update_simulator_balance($agentID, $amount=-1, $secureID=null)
 //
 // アバターがログインしていないと使用できない
 //
-function user_alert($agentID, $message, $secureID=null)
-{
-	$results = opensim_get_server_info($agentID);
-	if (!$results) return false;
-
-	$serverip  = $results['serverIP'];
-	$httpport  = $results['serverHttpPort'];
-	$serveruri = $results['serverURI'];
-	
-	$results = opensim_get_avatar_session($agentID);
-	if (!$results) return false;
-	$sessionID = $results['sessionID'];
-	if ($secureID==null) $secureID = $results['secureID'];
-
-	$req 	  = array('clientUUID'=>$agentID, 'clientSessionID'=>$sessionID, 'clientSecureSessionID'=>$secureID, 'Description'=>$message); 
-	$params   = array($req);
-	$request  = xmlrpc_encode_request('UserAlert', $params);
-	$response = do_call($serverip, $httpport, $serveruti, $request);
-
-	if ($response!=null and array_key_exists('success', $response)) return $response['success'];
-	return false;
-}
-
-
-//
-// no save to Transaction
-//
-function  move_money($agentID, $destID, $amount, $type, $flags, $desc, $prminvent=0, $nxtowner=0, $ip="")
-{
-	if (!USE_CURRENCY_SERVER) {
-  		$ret = env_set_money_transaction($agentID, $destID, $amount, $type, $flags, $desc, $prminvent, $nxtowner, $ip);
-		return $ret;
-	}
-
- 	opensim_set_currency_transaction($agentID, $destID, $amount, $type, $flags, $desc);
-	
-	if (isGUID($agentID) and $agentID!='00000000-0000-0000-0000-0000000000000') {
-		opensim_set_currency_balance($agentID, -$amount);
-	}
-
-	if (isGUID($destID)  and $destID !='00000000-0000-0000-0000-0000000000000') {
-		opensim_set_currency_balance($destID, $amount);
-	}
-
-	return true;
-}
-
-//
-// アバターがログインしていないと使用できない
-//
 function  add_money($agentID, $amount, $secureID=null) 
 {
 	if (!isGUID($agentID)) return false;
 
-	if (!USE_CURRENCY_SERVER) {
-		$ret = env_set_money_transaction(null, $agentID, $amount, 5010, 0, 'Add Money', 0, 0, '');
-		return $ret;
+    if (!USE_CURRENCY_SERVER) {
+		//return env_set_money_transaction(null, $agentID, $amount, 5010, 0, 'Add Money', 0, 0, '');
+		return false;
 	}
 
 	//
@@ -230,8 +220,8 @@ function  get_balance($agentID, $secureID=null)
 	$cash = -1;
 	if (!isGUID($agentID)) return (integer)$cash;
 
-	if (!USE_CURRENCY_SERVER) {
-		$cash = env_get_money_balance($agentID);
+    if (!USE_CURRENCY_SERVER) {
+		//return $cash = env_get_money_balance($agentID);
 		return (integer)$cash;
 	}
 
@@ -265,21 +255,21 @@ function  get_balance($agentID, $secureID=null)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //
-// Send the money to avatar for bonus
-//                                         by Milo
+// Send the money to avatar for bonus   by Milo
+//
+// XMLRPC による正式な手順による送金
+// アバターが一度もログインしていない場合は，送金できない．
 //
 // $serverURI:  処理を行うリージョンサーバの URI （オフライン時対応）
 // $secretCode: MoneyServer.ini に書かれた MoneyScriptAccessKey の値．
-// 
-// アバターが一度もログインしていない場合は，送金できない．
 //
-function send_money($agentID, $amount, $serverURI=null, $secretCode=null)
+function  send_money($agentID, $amount, $serverURI=null, $secretCode=null)
 {
     if (!isGUID($agentID)) return false;
 
     if (!USE_CURRENCY_SERVER) {
-    	$ret = env_set_money_transaction(null, $agentID, $amount, 5003, 0, 'Send Money', 0, 0, '');
-    	return $ret;
+    	//return env_set_money_transaction(null, $agentID, $amount, 5003, 0, 'Send Money', 0, 0, '');
+    	return false;
 	}
 
 	//
@@ -330,11 +320,34 @@ function send_money($agentID, $amount, $serverURI=null, $secretCode=null)
 }
 
 
+//
+function  move_money($srcID, $dstID, $amount, $type, $desc, $prminvent=0, $nxtowner=0, $ip='')
+{
+    if (!USE_CURRENCY_SERVER) {
+  		//return env_set_money_transaction($srcID, $dstID, $amount, $type, 0, $desc, $prminvent, $nxtowner, $ip);
+		return false;
+	}
+
+ 	$ret = opensim_set_currency_transaction($srcID, $dstID, $amount, $type, 0, $desc);
+	if ($ret) {
+		if (isGUID($srcID) and $srcID!='00000000-0000-0000-0000-0000000000000') {
+			opensim_set_currency_balance($srcID, -$amount);
+		}
+
+		if (isGUID($dstID) and $dstID !='00000000-0000-0000-0000-0000000000000') {
+			opensim_set_currency_balance($dstID, $amount);
+		}
+	}
+
+	return $ret;
+}
+
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // XML RPC
-function do_call($host, $port, $uri, $request)
+function  do_call($host, $port, $uri, $request)
 {
 	$url = '';
 	if ($uri!='') {
@@ -377,7 +390,7 @@ function  get_confirm_value($ipAddress)
 {
 	$key = env_get_config('currency_script_key');
 	if ($key=='') $key = '123456789';
-	$confirmvalue = md5($key."_".$ipAddress);
+	$confirmvalue = md5($key.'_'.$ipAddress);
 
 	return $confirmvalue;
 }
