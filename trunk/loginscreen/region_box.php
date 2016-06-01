@@ -3,13 +3,13 @@ if(!isset($_GET['regio'])){
   $orderby = "";
 } else {
   if($_GET['regio']==""){
-    $orderby = " ORDER by regionName ASC";
+    $orderby = "regionName ASC";
   }else if($_GET['regio']=="name"){
-    $orderby = " ORDER by regionName ASC";
+    $orderby = "regionName ASC";
   }else if($_GET['regio']=="x"){
-    $orderby = " ORDER by locX ASC";
+    $orderby = "locX ASC";
   }else if($_GET['regio']=="y"){
-    $orderby = " ORDER by locY ASC";
+    $orderby = "locY ASC";
   }
 }
 ?>
@@ -46,7 +46,7 @@ if(!isset($_GET['regio'])){
 
             <div style=" border:hidden; color:#ffffff; padding:0px; width:300px; height:160px; overflow:auto; ">
               <?php
-              $regions = opensim_get_regions_infos($orderby);
+              $regions = opensim_get_regions_infos('', $orderby);
               $w=0;
               foreach($regions as $region) {
                 $w++;
