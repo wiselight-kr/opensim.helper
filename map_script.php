@@ -5,7 +5,7 @@
 //													by Fumi.Iseki
 //
 //
-// $size, $centerX, $centerY, $world_map_url, ENV_HELPER_PATH, $course_id, $instance_id are needed
+// $size, $centerX, $centerY, $world_map_url, ENV_HELPER_PATH, $course_id are needed
 //
 
 //
@@ -42,7 +42,7 @@ else if ($size==512) {
 ?>
 
 function regionwin(uuid) {
-	window.open("<?php echo CMS_MODULE_URL.'/helper/sim.php?course='.$course_id.'&instance='.$instance_id.'&region='?>"+uuid, null,
+	window.open("<?php echo CMS_MODULE_URL.'/helper/sim.php?course='.$course_id.'&region='?>"+uuid, null,
 					'toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=no,copyhistory=no,width=800,height=450');
 }
 
