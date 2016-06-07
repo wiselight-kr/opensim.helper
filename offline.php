@@ -77,6 +77,3 @@ if ($method == "/RetrieveMessages/") {
 	}
 	exit;
 }
-
-
-?>
