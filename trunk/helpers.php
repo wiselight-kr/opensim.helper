@@ -25,11 +25,6 @@
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # 
 
-#
-# need external variable  by Fumi.Iseki
-#	class DB
-# 	CURRENCY_DB_HOST, CURRENCY_DB_NAME, CURRENCY_DB_USER, CURRENCY_DB_PASS
-#	CURRENCY_MONEY_TBL,	CURRENCY_TRANSACTION_TBL, .....
 # 
 #
 require_once(CMS_MODULE_PATH.'/jbxl/jbxl_tools.php');
