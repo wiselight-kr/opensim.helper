@@ -142,7 +142,7 @@ function buy_currency($method_name, $params, $app_data)
 
 	if ($transactionPermit) {
 		$res = add_money($agentid, $amount, $sessionid);
-		if ($res["success"]) $ret = true;
+		if ($res) $ret = true;
 	}
 
 	if ($ret) {
