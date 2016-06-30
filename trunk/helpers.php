@@ -27,7 +27,7 @@
 
 # 
 #
-require_once(CMS_MODULE_PATH.'/jbxl/jbxl_tools.php');
+require_once(ENV_HELPER_PATH.'/../jbxl/jbxl_tools.php');
 
 if (!isset($HTTP_RAW_POST_DATA)) $HTTP_RAW_POST_DATA = file_get_contents('php://input');
 #$request_xml = $HTTP_RAW_POST_DATA;
