@@ -122,7 +122,7 @@ function  user_alert($agentID, $message, $secureID=null)
 	// XML RPC to Region Server
 	$results = opensim_get_userinfo($agentID);
 	$server  = jbxl_make_url($results['simip'], 9000);
-	if ($serve['host']=='') return false;
+	if ($server['host']=='') return false;
 	
 	$results = opensim_get_avatar_session($agentID);		// use Presence Table
 	if (!$results) return false;
@@ -156,7 +156,7 @@ function  update_simulator_balance($agentID, $amount=-1, $secureID=null)
 	// XML RPC to Region Server
 	$results = opensim_get_userinfo($agentID);
 	$server  = jbxl_make_url($results['simip'], 9000);
-	if ($serve['host']=='') return false;
+	if ($server['host']=='') return false;
 
 	$results = opensim_get_avatar_session($agentID);
 	if (!$results) return false;
@@ -185,7 +185,7 @@ function  add_money($agentID, $amount, $secureID=null)
 	// XML RPC to Region Server
 	$results = opensim_get_userinfo($agentID);
 	$server  = jbxl_make_url($results['simip'], 9000);
-	if ($serve['host']=='') return false;
+	if ($server['host']=='') return false;
 
 	$results = opensim_get_avatar_session($agentID);
 	$sessionID = $results['sessionID'];
@@ -214,7 +214,7 @@ function  get_balance($agentID, $secureID=null)
 	// XML RPC to Region Server
 	$results = opensim_get_userinfo($agentID);
 	$server  = jbxl_make_url($results['simip'], 9000);
-	if ($serve['host']=='') return (integer)$cash;
+	if ($server['host']=='') return (integer)$cash;
 
 	$results = opensim_get_avatar_session($agentID);
 	if ($sessionID=='')  return (integer)$cash;
