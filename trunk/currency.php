@@ -111,7 +111,7 @@ function buy_currency($method_name, $params, $app_data)
 {
 	$req	   = $params[0];
 	$agentid   = $req['agentId'];
-	$sessionid = $req['secureSessionId'];
+	$secureid  = $req['secureSessionId'];
 	$amount	   = $req['currencyBuy'];
 	$confim	   = $req['confirm'];
 	$ipAddress = $_SERVER['REMOTE_ADDR'];
@@ -126,7 +126,7 @@ function buy_currency($method_name, $params, $app_data)
 		return "";
 	}
 
-	$checkSecure = opensim_check_secure_session($agentid, null, $sessionid);
+	$checkSecure = opensim_check_secure_session($agentid, null, $secureid);
 	if (!$checkSecure) {
 		$response_xml = xmlrpc_encode(array('success'	  => False,
 											'errorMessage'=> "\n\nMissmatch Secure Session ID!!",
@@ -141,7 +141,7 @@ function buy_currency($method_name, $params, $app_data)
 	$transactionPermit = process_transaction($agentid, $cost, $ipAddress);
 
 	if ($transactionPermit) {
-		$res = add_money($agentid, $amount, $sessionid);
+		$res = add_money($agentid, $amount, $secureid);
 		if ($res) $ret = true;
 	}
 
