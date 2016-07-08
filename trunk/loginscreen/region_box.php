@@ -46,7 +46,7 @@ if(!isset($_GET['regio'])){
 
             <div style=" border:hidden; color:#ffffff; padding:0px; width:300px; height:160px; overflow:auto; ">
               <?php
-              $regions = opensim_get_regions_infos('', $orderby);
+              $regions = opensim_get_regions_infos(false, '', $orderby);
               $w=0;
               foreach($regions as $region) {
                 $w++;
