@@ -245,8 +245,8 @@ function  get_balance($agentID, $secureID=null)
 //
 function  send_money($agentID, $amount, $serverURI=null, $secretCode=null)
 {
-	if (!USE_CURRENCY_SERVER) 	  return false;
-	if (!isGUID($agentID)) 		  return false;
+	if (!USE_CURRENCY_SERVER) return false;
+	if (!isGUID($agentID)) 	  return false;
 
 	// XML RPC to Region Server
 	$server['url'] = null;
@@ -265,9 +265,9 @@ function  send_money($agentID, $amount, $serverURI=null, $secretCode=null)
 		$secretCode = get_confirm_value($server['host']);
 	}
 
-	$req 	  = array('clientUUID'=>$agentID, 'secretAccessCode'=>$secretCode, 'amount'=>$amount);
+	$req 	  = array('agentUUID'=>$agentID, 'secretAccessCode'=>$secretCode, 'amount'=>$amount);
 	$params   = array($req);
-	$request  = xmlrpc_encode_request('SendMoneyBalance', $params);
+	$request  = xmlrpc_encode_request('SendMoney', $params);
 	$response = do_call($server['url'], $server['port'], $request);
 
 	if ($response!=null and array_key_exists('success', $response)) return $response['success'];
@@ -276,6 +276,48 @@ function  send_money($agentID, $amount, $serverURI=null, $secretCode=null)
 
 
 //
+// Send the money to avatar for bonus   by Milo
+//
+// XMLRPC による正式な手順による送金
+// アバターが一度もログインしていない場合は，送金できない．
+//
+// $serverURI:  処理を行うリージョンサーバの URI （オフライン時対応）
+// $secretCode: MoneyServer.ini に書かれた MoneyScriptAccessKey の値．
+//
+function  move_money($agentID, $receiptID, $amount, $$serverURI=null, $secretCode=null)
+{
+	if (!USE_CURRENCY_SERVER) return false;
+	if (!isGUID($agentID)) 	  return false;
+	if (!isGUID($receiptID))  return false;
+
+	// XML RPC to Region Server
+	$server['url'] = null;
+	if ($serverURI!=null) $server = jbxl_make_url($serverURI, 9000);
+
+	if ($server['url']==null) {
+		$results = opensim_get_userinfo($agentID);
+		$server  = jbxl_make_url($results['simip'], 9000);
+	}
+	if ($server['url']==null) return false;
+
+	if ($secretCode!=null) {
+		$secretCode = md5($secretCode.'_'.$server['host']);
+	}
+	else {
+		$secretCode = get_confirm_value($server['host']);
+	}
+
+	$req 	  = array('agentUUID'=>$agentID, 'receiptUUID'=>$receiptID, 'secretAccessCode'=>$secretCode, 'amount'=>$amount);
+	$params   = array($req);
+	$request  = xmlrpc_encode_request('MoveMoney', $params);
+	$response = do_call($server['url'], $server['port'], $request);
+
+	if ($response!=null and array_key_exists('success', $response)) return $response['success'];
+	return false;
+}
+
+
+/*
 function  move_money($srcID, $dstID, $amount, $type, $desc, $prminvent=0, $nxtowner=0, $ip='')
 {
 	if (!USE_CURRENCY_SERVER) return false;
@@ -293,6 +335,7 @@ function  move_money($srcID, $dstID, $amount, $type, $desc, $prminvent=0, $nxtow
 
 	return $ret;
 }
+*/
 
 
 
