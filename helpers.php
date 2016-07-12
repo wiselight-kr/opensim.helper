@@ -284,7 +284,7 @@ function  send_money($agentID, $amount, $serverURI=null, $secretCode=null)
 // $serverURI:  処理を行うリージョンサーバの URI （オフライン時対応）
 // $secretCode: MoneyServer.ini に書かれた MoneyScriptAccessKey の値．
 //
-function  move_money($agentID, $receiptID, $amount, $$serverURI=null, $secretCode=null)
+function  move_money($agentID, $receiptID, $amount, $serverURI=null, $secretCode=null)
 {
 	if (!USE_CURRENCY_SERVER) return false;
 	if (!isGUID($agentID)) 	  return false;
