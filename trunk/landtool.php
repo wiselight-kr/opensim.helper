@@ -59,12 +59,12 @@ function buy_land_prep($method_name, $params, $app_data)
 {
 	$req		  = $params[0];
 	$agentid	  = $req['agentId'];
-	$sessionid	  = $req['secureSessionId'];
+	$secureid	  = $req['secureSessionId'];
 	$amount		  = $req['currencyBuy'];
 	$billableArea = $req['billableArea'];
 	$ipAddress 	  = $_SERVER['REMOTE_ADDR'];
 
-	$ret = opensim_check_secure_session($agentid, null, $sessionid);
+	$ret = opensim_check_secure_session($agentid, null, $secureid);
 
 	if($ret) {
 		$confirmvalue = get_confirm_value($ipAddress);
@@ -102,7 +102,7 @@ function buy_land($method_name, $params, $app_data)
 {
 	$req		  = $params[0];
 	$agentid	  = $req['agentId'];
-	$sessionid	  = $req['secureSessionId'];
+	$secureid	  = $req['secureSessionId'];
 	$amount		  = $req['currencyBuy'];
 	$cost		  = $req['estimatedCost'];
 	$billableArea = $req['billableArea'];
@@ -119,7 +119,7 @@ function buy_land($method_name, $params, $app_data)
 		return "";
 	}
 
-	$ret = opensim_check_secure_session($agentid, null, $sessionid);
+	$ret = opensim_check_secure_session($agentid, null, $secureid);
 
 	if ($ret) {
 		if($amount>=0) {
@@ -132,13 +132,13 @@ function buy_land($method_name, $params, $app_data)
 			}
 			//
 			$enough_money = false;
-			$res = add_money($agentid, $amount, $sessionid);
+			$res = add_money($agentid, $amount, $secureid);
 			if ($res["success"]) $enough_money = true;
 			
 			if ($enough_money) {
 				$amount += get_balance($agentid);
 				move_money($agentid, null, $amount, 5002, 0, "Land Purchase", 0, 0, $ipAddress);
-				update_simulator_balance($agentid, -1, $sessionid);
+				update_simulator_balance($agentid, -1, $secureid);
 				$response_xml = xmlrpc_encode(array('success' => True));
 			}
 			else {

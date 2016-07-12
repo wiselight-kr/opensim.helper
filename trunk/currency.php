@@ -74,11 +74,11 @@ function get_currency_quote($method_name, $params, $app_data)
 {
 	$req	   = $params[0];
 	$agentid   = $req['agentId'];
-	$sessionid = $req['secureSessionId'];
+	$secureid  = $req['secureSessionId'];
 	$amount	   = $req['currencyBuy'];
 	$ipAddress = $_SERVER['REMOTE_ADDR'];
 
-	$ret = opensim_check_secure_session($agentid, null, $sessionid);
+	$ret = opensim_check_secure_session($agentid, null, $secureid);
 
 	if ($ret) {
 		$confirmvalue = get_confirm_value($ipAddress);
@@ -170,11 +170,11 @@ xmlrpc_server_register_method($xmlrpc_server, "simulatorUserBalanceRequest", "ba
 
 function balance_request($method_name, $params, $app_data)
 {
-	$req	   = $params[0];
-	$agentid   = $req['agentId'];
-	$sessionid = $req['secureSessionId'];
+	$req	  = $params[0];
+	$agentid  = $req['agentId'];
+	$secureid = $req['secureSessionId'];
 
-	$balance = get_balance($agentid, $sessionid);
+	$balance = get_balance($agentid, $secureid);
 
 	if ($balance>=0) {
 		$response_xml = xmlrpc_encode(array('success' => True,
@@ -206,7 +206,7 @@ function region_move_money($method_name, $params, $app_data)
 	$req					= $params[0];
 	$agentid				= $req['agentId'];
 	$destid					= $req['destId'];
-	$sessionid				= $req['secureSessionId'];
+	$secureid				= $req['secureSessionId'];
 	$regionid				= $req['regionId'];
 	$secret					= $req['secret'];
 	$currencySecret			= $req['currencySecret'];
@@ -221,14 +221,14 @@ function region_move_money($method_name, $params, $app_data)
 	$ret = opensim_check_region_secret($regionid, $secret);
 
 	if ($ret) {
-		$ret = opensim_check_secure_session($agentid, $regionid, $sessionid);
+		$ret = opensim_check_secure_session($agentid, $regionid, $secureid);
 
 		if ($ret) {
-			$balance = get_balance($agentid, $sessionid);
+			$balance = get_balance($agentid, $secureid);
 			if ($balance >= $cash) {
 				move_money($agentid, $destid, $cash, $transactiontype, $flags, $description, 
 										$aggregatePermInventory, $aggregatePermNextOwner, $ipAddress);
-				$sbalance = get_balance($agentid, $sessionid);
+				$sbalance = get_balance($agentid, $secureid);
 				$dbalance = get_balance($destid);
 
 				$response_xml = xmlrpc_encode(array('success'		=> True,
@@ -237,7 +237,7 @@ function region_move_money($method_name, $params, $app_data)
 													'funds2'		=> $balance,
 													'currencySecret'=> " "));
 
-				update_simulator_balance($agentid, $sbalance, $sessionid);
+				update_simulator_balance($agentid, $sbalance, $secureid);
 				update_simulator_balance($destid,  $dbalance);
 			}
 			else {
@@ -274,22 +274,22 @@ xmlrpc_server_register_method($xmlrpc_server, "simulatorClaimUserRequest", "clai
 
 function claimUser_func($method_name, $params, $app_data)
 {
-	$req	   = $params[0];
-	$agentid   = $req['agentId'];
-	$sessionid = $req['secureSessionId'];
-	$regionid  = $req['regionId'];
-	$secret	   = $req['secret'];
+	$req	  = $params[0];
+	$agentid  = $req['agentId'];
+	$secureid = $req['secureSessionId'];
+	$regionid = $req['regionId'];
+	$secret	  = $req['secret'];
 	
 	$ret = opensim_check_region_secret($regionid, $secret);
 
 	if ($ret) {
-		$ret = opensim_check_secure_session($agentid, null, $sessionid);
+		$ret = opensim_check_secure_session($agentid, null, $secureid);
 
 		if ($ret) {
 			$ret = opensim_set_current_region($agentid, $regionid);
 
 			if ($ret) {
-				$balance = get_balance($agentid, $sessionid);
+				$balance = get_balance($agentid, $secureid);
 				$response_xml = xmlrpc_encode(array('success'		=> True,
 													'agentId'		=> $agentid,
 													'funds'		    => $balance,
