@@ -23,10 +23,10 @@
 </div>
 
 <div id=bottom_left>
-  <?php include("loginscreen/special.php"); ?>
+  <?php include('loginscreen/special.php'); ?>
   <br />
   <div id=regionbox>
-    <?php include("loginscreen/region_box.php"); ?>
+    <?php include('loginscreen/region_box.php'); ?>
   </div>
 </div>
 
@@ -36,13 +36,13 @@
   <br />
   <br />
   <div id=gridstatus>
-    <?php include("loginscreen/gridstatus.php"); ?>
+    <?php include('loginscreen/gridstatus.php'); ?>
   </div>
   <br />
   <div id=Infobox>
     <?php 
       if ($BOX_INFOTEXT!="" or $BOX_TITLE!="") {
-        include("loginscreen/alert_box.php"); 
+        include('loginscreen/alert_box.php'); 
       }
     ?>
   </div>
