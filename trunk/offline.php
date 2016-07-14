@@ -1,36 +1,35 @@
 <?php
 
-if (!defined('ENV_HELPER_PATH')) require_once(realpath(dirname(__FILE__).'/../include/config.php'));
+if (!defined('ENV_READ_CONFIG')) require_once(realpath(dirname(__FILE__).'/../include/config.php'));
 if (!defined('ENV_READ_DEFINE')) require_once(realpath(ENV_HELPER_PATH.'/../include/env_define.php'));
 require_once(realpath(ENV_HELPER_PATH.'/../include/opensim.mysql.php'));
 
 
 if (!isset($HTTP_RAW_POST_DATA)) $HTTP_RAW_POST_DATA = file_get_contents('php://input');
 //$request_xml = $HTTP_RAW_POST_DATA;
-//error_log("offline.php: ".$request_xml);
+//error_log('offline.php: '.$request_xml);
 
 
 //
 if (!opensim_is_access_from_region_server()) {
-	$remote_addr = $_SERVER["REMOTE_ADDR"];
-	error_log("offline.php: Illegal access from ".$remote_addr);
+	$remote_addr = $_SERVER['REMOTE_ADDR'];
+	error_log('offline.php: Illegal access from '.$remote_addr);
 	exit;
 }
 
 
-$DbLink = new DB(OFFLINE_DB_HOST, OFFLINE_DB_NAME, OFFLINE_DB_USER, OFFLINE_DB_PASS, OFFLINE_DB_MYSQLI);
+$DbLink = new DB($OFFLINE_DB_HOST, $OFFLINE_DB_NAME, $OFFLINE_DB_USER, $OFFLINE_DB_PASS, $OFFLINE_DB_MYSQLI);
 
-$method = $_SERVER["PATH_INFO"];
+$method = $_SERVER['PATH_INFO'];
 
 
-if ($method == "/SaveMessage/") {
+if ($method == '/SaveMessage/') {
 	$msg = $HTTP_RAW_POST_DATA;
 	$start = strpos($msg, "?>");
 
 	if ($start != -1) {
 		$start+=2;
 		$msg   = substr($msg, $start);
-		//$parts = split("[<>]", $msg);
 		$parts = preg_split("/[<>]/", $msg);
 		$from_agent = $parts[4];
 		$to_agent   = $parts[12];
@@ -53,9 +52,8 @@ if ($method == "/SaveMessage/") {
 }
 
 
-if ($method == "/RetrieveMessages/") {
+if ($method == '/RetrieveMessages/') {
 	$parms = $HTTP_RAW_POST_DATA;
-	//$parts = split("[<>]", $parms);
 	$parts = preg_split("/[<>]/", $parms);
 	$agent_id = $parts[6];
 	$errno = -1;

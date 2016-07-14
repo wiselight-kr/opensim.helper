@@ -31,7 +31,7 @@
 // Modified by Fumi.Iseki for CMS/LMS '09 5/31
 //
 
-if (!defined('ENV_HELPER_PATH')) require_once(realpath(dirname(__FILE__).'/../include/config.php'));
+if (!defined('ENV_READ_CONFIG')) require_once(realpath(dirname(__FILE__).'/../include/config.php'));
 if (!defined('ENV_READ_DEFINE')) require_once(realpath(ENV_HELPER_PATH.'/../include/env_define.php'));
 require_once(realpath(ENV_HELPER_PATH.'/helpers.php'));
 
@@ -41,7 +41,6 @@ require_once(realpath(ENV_HELPER_PATH.'/helpers.php'));
 #
 # The XMLRPC server object
 #
-
 $xmlrpc_server = xmlrpc_server_create();
 
 #
