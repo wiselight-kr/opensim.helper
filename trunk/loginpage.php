@@ -20,5 +20,5 @@ $USER_COUNT 	  = $status['user_count'];
 $REGION_COUNT 	  = $status['region_count'];
 
 header('pragma: no-cache');
-include('./loginscreen.php');
+include(dirname(__FILE__).'/loginscreen.php');
 

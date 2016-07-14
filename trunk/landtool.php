@@ -53,7 +53,6 @@ $xmlrpc_server = xmlrpc_server_create();
 #
 # Land buying functions
 #
-
 xmlrpc_server_register_method($xmlrpc_server, "preflightBuyLandPrep", "buy_land_prep");
 
 function buy_land_prep($method_name, $params, $app_data)
@@ -96,7 +95,6 @@ function buy_land_prep($method_name, $params, $app_data)
 #
 # Perform the buy (所持金が足りないとき)
 #
-
 xmlrpc_server_register_method($xmlrpc_server, "buyLandPrep", "buy_land");
 
 function buy_land($method_name, $params, $app_data)
@@ -163,11 +161,9 @@ function buy_land($method_name, $params, $app_data)
 
 
 
-
 #
 # Process XMLRPC request
 #
-
 if (!isset($HTTP_RAW_POST_DATA)) $HTTP_RAW_POST_DATA = file_get_contents('php://input');
 $request_xml = $HTTP_RAW_POST_DATA;
 //error_log("landtool.php: ".$request_xml);

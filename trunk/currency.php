@@ -56,19 +56,15 @@ if (!defined('ENV_READ_DEFINE')) require_once(realpath(ENV_HELPER_PATH.'/../incl
 require_once(realpath(ENV_HELPER_PATH.'/helpers.php'));
 
 
-
 #
 # The XMLRPC server object
 #
-
 $xmlrpc_server = xmlrpc_server_create();
-
 
 
 #
 # Viewer retrieves currency buy quote
 #
-
 xmlrpc_server_register_method($xmlrpc_server, "getCurrencyQuote", "get_currency_quote");
 
 function get_currency_quote($method_name, $params, $app_data)
@@ -100,7 +96,6 @@ function get_currency_quote($method_name, $params, $app_data)
 
 	return "";
 }
-
 
 
 #
@@ -162,11 +157,9 @@ function buy_currency($method_name, $params, $app_data)
 }
 
 
-
 #
 # Region requests account balance
 #
-
 xmlrpc_server_register_method($xmlrpc_server, "simulatorUserBalanceRequest", "balance_request");
 
 function balance_request($method_name, $params, $app_data)
@@ -195,11 +188,9 @@ function balance_request($method_name, $params, $app_data)
 }
 
 
-
 #
 # Region initiates money transfer (Direct DB Operation for security)
 #
-
 xmlrpc_server_register_method($xmlrpc_server, "regionMoveMoney", "region_move_money");
 
 function region_move_money($method_name, $params, $app_data)
@@ -266,11 +257,9 @@ function region_move_money($method_name, $params, $app_data)
 }
 
 
-
 #
 # Region claims user
 #
-
 xmlrpc_server_register_method($xmlrpc_server, "simulatorClaimUserRequest", "claimUser_func");
 
 function claimUser_func($method_name, $params, $app_data)
@@ -322,11 +311,9 @@ function claimUser_func($method_name, $params, $app_data)
 
 
 
-
 #
 # Process the request
 #
-
 if (!isset($HTTP_RAW_POST_DATA)) $HTTP_RAW_POST_DATA = file_get_contents('php://input');
 $request_xml = $HTTP_RAW_POST_DATA;
 #error_log('currency.php: '.$request_xml);
