@@ -27,6 +27,7 @@
 
 # 
 #
+require_once(realpath(ENV_HELPER_PATH.'/../include/opensim.mysql.php'));
 require_once(realpath(ENV_HELPER_PATH.'/../include/env_lib.php'));
 require_once(realpath(ENV_HELPER_PATH.'/../jbxl/jbxl_tools.php'));
 
