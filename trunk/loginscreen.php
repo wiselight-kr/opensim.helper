@@ -8,7 +8,12 @@
 <link  href="loginscreen/style.css" type=text/css rel=stylesheet />
 <link  href="loginscreen/alert_box.css" type=text/css rel=stylesheet />
 <script src="loginscreen/resize.js" type=text/javascript></script>
-<script src="loginscreen/imageswitch.js" type=text/javascript></script>
+
+<?php if (LOGINPAGE_SCRIPT==1) { ?>
+  <script src="loginscreen/imageswitch1.js" type=text/javascript></script>
+<?php } else { ?>
+  <script src="loginscreen/imageswitch2.js" type=text/javascript></script>
+<?php }?>
 </head>
 
 <body bgcolor=#000000>
