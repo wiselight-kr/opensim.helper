@@ -287,18 +287,18 @@ function  send_money($agentID, $amount, $serverURI=null, $secretCode=null)
 // $serverURI:  処理を行うリージョンサーバの URI （オフライン時対応）
 // $secretCode: MoneyServer.ini に書かれた MoneyScriptAccessKey の値．
 //
-function  move_money($agentID, $receiptID, $amount, $serverURI=null, $secretCode=null)
+function  move_money($fromID, $toID, $amount, $serverURI=null, $secretCode=null)
 {
 	if (!USE_CURRENCY_SERVER) return false;
-	if (!isGUID($agentID)) 	  return false;
-	if (!isGUID($receiptID))  return false;
+	if (!isGUID($fromID)) 	  return false;
+	if (!isGUID($toID))       return false;
 
 	// XML RPC to Region Server
 	$server['url'] = null;
 	if ($serverURI!=null) $server = jbxl_make_url($serverURI, 9000);
 
 	if ($server['url']==null) {
-		$results = opensim_get_userinfo($agentID);
+		$results = opensim_get_userinfo($fromID);
 		$server  = jbxl_make_url($results['simip'], 9000);
 	}
 	if ($server['url']==null) return false;
@@ -310,7 +310,7 @@ function  move_money($agentID, $receiptID, $amount, $serverURI=null, $secretCode
 		$secretCode = get_confirm_value($server['host']);
 	}
 
-	$req 	  = array('agentUUID'=>$agentID, 'receiptUUID'=>$receiptID, 'secretAccessCode'=>$secretCode, 'amount'=>$amount);
+	$req 	  = array('fromUUID'=>$fromID, 'toUUID'=>$toID, 'secretAccessCode'=>$secretCode, 'amount'=>$amount);
 	$params   = array($req);
 	$request  = xmlrpc_encode_request('MoveMoney', $params);
 	$response = do_call($server['url'], $server['port'], $request);
