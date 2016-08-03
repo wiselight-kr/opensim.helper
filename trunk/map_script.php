@@ -44,7 +44,7 @@ else if ($size==512) {
 ?>
 
 function regionwin(uuid) {
-	window.open("<?php echo ENV_HELPER_URL.'/sim.php?course='.$course_id.'&region='?>"+uuid, null,
+	window.open("<?php echo ENV_HELPER_URL.'/sim.php?course='.$course_id.'&region='?>"+uuid, '',
 					'toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=no,copyhistory=no,width=800,height=450');
 }
 
