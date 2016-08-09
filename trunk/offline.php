@@ -18,7 +18,7 @@ if (!opensim_is_access_from_region_server()) {
 }
 
 
-$DbLink = new DB($OFFLINE_DB_HOST, $OFFLINE_DB_NAME, $OFFLINE_DB_USER, $OFFLINE_DB_PASS, $OFFLINE_DB_MYSQLI);
+$DbLink = new DB($MESSAGE_DB_HOST, $MESSAGE_DB_NAME, $MESSAGE_DB_USER, $MESSAGE_DB_PASS, $MESSAGE_DB_MYSQLI);
 
 $method = $_SERVER['PATH_INFO'];
 
