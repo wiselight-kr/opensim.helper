@@ -9,7 +9,6 @@ if (!isset($HTTP_RAW_POST_DATA)) $HTTP_RAW_POST_DATA = file_get_contents('php://
 //$request_xml = $HTTP_RAW_POST_DATA;
 //error_log('offline.php: '.$request_xml);
 
-
 //
 if (!opensim_is_access_from_region_server()) {
 	$remote_addr = $_SERVER['REMOTE_ADDR'];
@@ -23,11 +22,11 @@ $DbLink = new DB($MESSAGE_DB_HOST, $MESSAGE_DB_NAME, $MESSAGE_DB_USER, $MESSAGE_
 $method = $_SERVER['PATH_INFO'];
 
 
-if ($method == '/SaveMessage/') {
+if ($method=='/SaveMessage/') {
 	$msg = $HTTP_RAW_POST_DATA;
 	$start = strpos($msg, "?>");
 
-	if ($start != -1) {
+	if ($start!=-1) {
 		$start+=2;
 		$msg   = substr($msg, $start);
 		$parts = preg_split("/[<>]/", $msg);
@@ -50,7 +49,6 @@ if ($method == '/SaveMessage/') {
 	echo '<?xml version="1.0" encoding="utf-8"?><boolean>false</boolean>';
 	exit;
 }
-
 
 if ($method == '/RetrieveMessages/') {
 	$parms = $HTTP_RAW_POST_DATA;
