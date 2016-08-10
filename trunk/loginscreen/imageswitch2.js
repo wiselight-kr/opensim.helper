@@ -1,44 +1,20 @@
 function bgImgRotate() 
 { 
-	var images = Array( "images/login_screens/login1.jpg", "images/login_screens/login2.jpg", "images/login_screens/login3.jpg", "images/login_screens/login4.jpg",
-	                    "images/login_screens/login5.jpg", "images/login_screens/login6.jpg", "images/login_screens/login7.jpg", "images/login_screens/login8.jpg"); 
+	//////////////////////////////////////////////////////////////////////////////////////////////
+	var images = Array( "images/login_screens/login1.jpg", "images/login_screens/login2.jpg", 
+						"images/login_screens/login3.jpg", "images/login_screens/login4.jpg",
+	                    "images/login_screens/login5.jpg", "images/login_screens/login6.jpg", 
+						"images/login_screens/login7.jpg", "images/login_screens/login8.jpg"); 
+	//////////////////////////////////////////////////////////////////////////////////////////////
+
 	var myDate = new Date();
 	var hour = myDate.getHours(); 
 	var min  = myDate.getMinutes();
 	var uxtm = myDate.getTime(); 
-	// var index = Math.floor(hour/8); 
+//	var index = Math.floor(hour/8); 
 	var index; 
 
     index = min % 8;
-/*
-	if      (hour < 3) { 
-		index = 0; 
-	} 
-	else if (hour < 6) { 
-		index = 1; 
-	} 
-	else if (hour < 9) { 
-		index = 2; 
-	} 
-	else if (hour < 12) { 
-		index = 3; 
-	} 
-	else if (hour < 15) { 
-		index = 4; 
-	} 
-	else if (hour < 18) { 
-		index = 5; 
-	} 
-	else if (hour < 21) { 
-		index = 6; 
-	} 
-	else if (hour < 24) { 
-		index = 7; 
-	} 
-	else { 
-		index = 3; 
-	}
-*/
 	document.getElementById('mainImage').src = images[index]+'?'+uxtm;
 } 
 
