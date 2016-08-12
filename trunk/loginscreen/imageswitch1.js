@@ -1,8 +1,8 @@
 function bgImgRotate() 
 { 
 	/////////////////////////////////////////////////////////////////////////////////////////////
-	var images = Array( "images/login_screens/login1.jpg", "images/login_screens/login2.jpg", 
-						"images/login_screens/login3.jpg", "images/login_screens/login4.jpg"); 
+	var images = Array( "images/login_screens/login1-1.jpg", "images/login_screens/login1-2.jpg", 
+						"images/login_screens/login1-3.jpg", "images/login_screens/login1-4.jpg"); 
 	/////////////////////////////////////////////////////////////////////////////////////////////
 
 	var myDate = new Date();
