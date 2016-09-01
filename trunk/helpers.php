@@ -243,10 +243,11 @@ function  get_balance($agentID, $secureID=null)
 // XMLRPC による正式な手順による送金
 // アバターが一度もログインしていない場合は，送金できない．
 //
+// $type: トランザクションのタイプ．デフォルトは 5003:ReferBonus
 // $serverURI:  処理を行うリージョンサーバの URI （オフライン時対応）
 // $secretCode: MoneyServer.ini に書かれた MoneyScriptAccessKey の値．
 //
-function  send_money($agentID, $amount, $serverURI=null, $secretCode=null)
+function  send_money($agentID, $amount, $type=5003, $serverURI=null, $secretCode=null)
 {
 	if (!USE_CURRENCY_SERVER) return false;
 	if (!isGUID($agentID)) 	  return false;
@@ -268,7 +269,7 @@ function  send_money($agentID, $amount, $serverURI=null, $secretCode=null)
 		$secretCode = get_confirm_value($server['host']);
 	}
 
-	$req 	  = array('agentUUID'=>$agentID, 'secretAccessCode'=>$secretCode, 'amount'=>$amount);
+	$req 	  = array('agentUUID'=>$agentID, 'secretAccessCode'=>$secretCode, 'amount'=>$amount, 'type'=>$type);
 	$params   = array($req);
 	$request  = xmlrpc_encode_request('SendMoney', $params);
 	$response = do_call($server['url'], $server['port'], $request);
